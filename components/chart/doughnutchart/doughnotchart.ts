@@ -10,6 +10,76 @@ import {Component, ElementRef, AfterViewInit, OnDestroy, DoCheck, SimpleChange, 
 })
 export class DoughnutChart implements AfterViewInit, OnDestroy, DoCheck {
 
+    @Input() animation: boolean = true;
+
+    @Input() showScale: boolean = true;
+
+    @Input() scaleOverride: boolean = false;
+
+    @Input() scaleSteps: number = null;
+
+    @Input() scaleStepWidth: number = null;
+
+    @Input() scaleStartValue: number = null;
+
+    @Input() scaleLineColor: string = 'rgba(0,0,0,.1)';
+
+    @Input() scaleLineWidth: number = 1;
+
+    @Input() scaleShowLabels: boolean = true;
+
+    @Input() scaleLabel: string = '<%=value%>';
+
+    @Input() scaleIntegersOnly: boolean = true;
+
+    @Input() scaleBeginAtZero: boolean = true;
+
+    @Input() scaleFontFamily: string = "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
+
+    @Input() scaleFontSize: number = 12;
+
+    @Input() scaleFontStyle: string = 'normal';
+
+    @Input() scaleFontColor: string = '#666';
+
+    @Input() responsive: boolean = false;
+
+    @Input() maintainAspectRatio: boolean = true;
+
+    @Input() showTooltips: boolean = true;
+
+    @Input() tooltipFillColor: string = 'rgba(0,0,0,0.8)';
+
+    @Input() tooltipFontFamily: string = "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
+
+    @Input() tooltipFontSize: number = 14;
+
+    @Input() tooltipFontStyle: string = 'normal';
+
+    @Input() tooltipFontColor: string = '#fff';
+
+    @Input() tooltipTitleFontFamily: string = "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
+
+    @Input() tooltipTitleFontSize: number = 14;
+
+    @Input() tooltipTitleFontStyle: string = 'bold';
+
+    @Input() tooltipTitleFontColor: string = '#fff';
+
+    @Input() tooltipYPadding: number = 6;
+
+    @Input() tooltipXPadding: number = 6;
+
+    @Input() tooltipCaretSize: number = 8;
+
+    @Input() tooltipCornerRadius: number = 6;
+
+    @Input() tooltipXOffset: number = 10;
+
+    @Input() tooltipTemplate: string = "<%if (label){%><%=label%>: <%}%><%= value %>";
+
+    @Input() multiTooltipTemplate: string = "<%= value %>";
+
     @Input() value: CircularChartData[];
 
     @Input() width: string;
@@ -32,9 +102,11 @@ export class DoughnutChart implements AfterViewInit, OnDestroy, DoCheck {
 
     @Input() animateScale: boolean = false;
 
+    @Input() legend: any;
+
     @Input() legendTemplate: string = "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>";
 
-    @Output() onSegmentSelect: EventEmitter<any> = new EventEmitter();
+    @Output() onSegmentsSelect: EventEmitter<any> = new EventEmitter();
 
     initialized: boolean;
 
@@ -74,7 +146,7 @@ export class DoughnutChart implements AfterViewInit, OnDestroy, DoCheck {
         if(this.chart) {
             let segs = this.chart.getSegmentsAtEvent(event);
             if(segs) {
-                this.onSegmentSelect.next({originalEvent: event, segments: segs});
+                this.onSegmentsSelect.next({originalEvent: event, segments: segs});
             }
         }
     }
@@ -92,6 +164,10 @@ export class DoughnutChart implements AfterViewInit, OnDestroy, DoCheck {
                 animateScale: this.animateScale,
                 legendTemplate: this.legendTemplate
             });
+
+            if(this.legend) {
+                this.legend.innerHTML = this.chart.generateLegend();
+            }
         }
     }
 }

@@ -102,9 +102,11 @@ export class PieChart implements AfterViewInit, OnDestroy, DoCheck {
 
     @Input() animateScale: boolean = false;
 
+    @Input() legend: any;
+
     @Input() legendTemplate: string = "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>";
 
-    @Output() onSegmentSelect: EventEmitter<any> = new EventEmitter();
+    @Output() onSegmentsSelect: EventEmitter<any> = new EventEmitter();
 
     initialized: boolean;
 
@@ -144,7 +146,7 @@ export class PieChart implements AfterViewInit, OnDestroy, DoCheck {
         if(this.chart) {
             let segs = this.chart.getSegmentsAtEvent(event);
             if(segs) {
-                this.onSegmentSelect.next({originalEvent: event, segments: segs});
+                this.onSegmentsSelect.next({originalEvent: event, segments: segs});
             }
         }
     }
@@ -162,6 +164,10 @@ export class PieChart implements AfterViewInit, OnDestroy, DoCheck {
                 animateScale: this.animateScale,
                 legendTemplate: this.legendTemplate
             });
+
+            if(this.legend) {
+                this.legend.innerHTML = this.chart.generateLegend();
+            }
         }
     }
 }
