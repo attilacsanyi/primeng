@@ -1,5 +1,5 @@
 /*
- * PrimeUI 4.0-SNAPSHOT
+ * PrimeUI 4.0.0
  * 
  * Copyright 2009-2015 PrimeTek.
  *
@@ -163,7 +163,7 @@ button.ui-button::-moz-focus-inner{border:0;padding:0;}
 .ui-dialog .ui-dialog-content{position:relative;border:0;padding:.5em 1em;background:none;overflow:auto;zoom:1;}
 .ui-dialog .ui-dialog-buttonpane{text-align:left;border-width:1px 0 0 0;background-image:none;margin:.5em 0 0 0;padding:.3em 1em .5em .4em;}
 .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset{float:right;}
-.ui-dialog .ui-dialog-buttonpane button{margin:.5em .4em .5em 0;cursor:pointer;}
+.ui-dialog .ui-dialog-buttonpane button{margin:.5em .4em .5em 0;cursor:pointer;float:right;}
 .ui-dialog .ui-resizable-se{width:14px;height:14px;right:3px;bottom:3px;}
 .ui-draggable .ui-dialog-titlebar{cursor:move;}
 .ui-dialog .ui-dialog-titlebar-close,.ui-dialog .ui-dialog-titlebar-minimize,.ui-dialog .ui-dialog-titlebar-maximize{float:right;margin-top:2px;top:0;padding:1px;cursor:pointer;height:16px;}
@@ -289,10 +289,6 @@ button.ui-button::-moz-focus-inner{border:0;padding:0;}
 .ui-menubar .ui-widget-header h1,.ui-menubar .ui-widget-header h2,.ui-menubar .ui-widget-header h3,.ui-menubar .ui-widget-header h4,.ui-menubar .ui-widget-header h5,.ui-menubar .ui-widget-header h6{padding:.4em .3em;}
 .ui-menubar .ui-menubar-options{float:right;}
 .ui-menu .ui-separator{width:98%;height:0;float:left;clear:both;margin:1px 0 0 0;padding:0;border-top:0 none;}
-.ui-megamenu td{vertical-align:top;}
-.ui-menu.ui-megamenu .ui-menu-parent .ui-menu-child{width:auto;}
-.ui-menu.ui-megamenu .ui-menu-child>table{width:auto;}
-.ui-menu.ui-megamenu .ui-menu-child .ui-menu-list{width:12.5em;}
 .ui-breadcrumb{margin:0;padding:0;overflow:hidden;padding:5px 5px 7px 5px;}
 .ui-breadcrumb ul{margin:0;padding:0;display:block;}
 .ui-breadcrumb ul li{display:block;float:left;position:relative;overflow:hidden;}
@@ -307,7 +303,11 @@ button.ui-button::-moz-focus-inner{border:0;padding:0;}
 .ui-slidemenu .ui-menu-child{box-shadow:none;border:0 none;background:none repeat scroll 0 0 transparent;}
 .ui-slidemenu-backward{position:absolute;bottom:0;width:95%;margin-bottom:.4em;padding:.2em;cursor:pointer;display:none;}
 .ui-slidemenu-backward .ui-icon{float:left;margin-top:1px;}
-.ui-fluid .ui-menu{width:100%;}.ui-messages{border:1px solid;margin:10px 0;padding:20px 20px 20px 10px;display:none;position:relative;}
+.ui-fluid .ui-menu{width:100%;}
+.ui-megamenu .ui-megamenu-panel.ui-menu-child{width:auto;}
+.ui-megamenu .ui-megamenu-panel .ui-menu-list{width:12.5em;}
+.ui-megamenu-vertical{width:12.5em;}
+.ui-megamenu-vertical .ui-menuitem-link,.ui-megamenu-vertical .ui-menu-list .ui-menuitem{width:100%;box-sizing:border-box;}.ui-messages{border:1px solid;margin:10px 0;padding:20px 20px 20px 10px;display:none;position:relative;}
 .ui-messages-icon{display:block;float:left;margin-top:-5px;padding:0;position:relative;}
 .ui-messages-summary{margin-left:10px;font-weight:bold;}
 .ui-messages-detail{margin-left:5px;}
