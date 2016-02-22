@@ -1,5 +1,3 @@
-/// <reference path="../../typedefinition/primeui.d.ts" />
-
 import {Component,ElementRef,AfterViewInit,OnDestroy,OnChanges,Input,Output,SimpleChange} from 'angular2/core';
 
 @Component({
@@ -11,10 +9,6 @@ import {Component,ElementRef,AfterViewInit,OnDestroy,OnChanges,Input,Output,Simp
     `
 })
 export class PanelMenu {
-
-    @Input() autoDisplay: boolean;
-
-    @Input() stateful: boolean;
 
     @Input() style: string;
 
@@ -31,9 +25,7 @@ export class PanelMenu {
     ngAfterViewInit() {
         this.menuElement = jQuery(this.el.nativeElement).children('div');
         this.menuElement.puipanelmenu({
-            enhanced: true,
-            autoDisplay: this.autoDisplay,
-            stateful: this.stateful
+            enhanced: true
         });
         this.initialized = true;
     }
