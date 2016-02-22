@@ -7,3 +7,4 @@ typings
 !showcase/resources/**/*.js
 !showcase/resources/primeui/primeui.d.ts
 .idea/
+.vscode
