@@ -1,0 +1,51 @@
+<datatable-demos></datatable-demos>
+
+<div class="ContentSideSections">
+    <div class="Content100 overHidden TextShadow">
+        <span class="fontSize30 TextShadow orange mediumFont marginBottom20 dispBlock">DataTable - <span class="subitem">Filter</span></span>
+        <span class="defaultText dispTable">Filtering is enabled by setting the filter property as true in column object. Default match mode is "startsWith" and this can be configured
+        using filterMatchMode property of column object that also accepts "contains" and "endsWith".</span>
+    </div>
+</div>
+
+<div class="ContentSideSections Implementation">
+    <p-dataTable [value]="cars" [columns]="cols" [rows]="10" [paginator]="true">
+        <header>List of Cars</header>
+    </p-dataTable>
+</div>
+
+<div class="ContentSideSections Source">
+    <p-tabView effect="fade">
+        <p-tabPanel header="datatablefilterdemo.ts">
+<pre>
+export class DataTableFilterDemo implements OnInit {
+
+    cars: Car[];
+
+    cols: Column[];
+
+    constructor(private carService: CarService) {}
+
+    ngOnInit() {
+        this.carService.getCarsMedium().then(cars => this.cars = cars);
+
+        this.cols = [
+            {field: 'vin', header: 'Vin (startsWith)', filter: true},
+            {field: 'brand', header: 'Brand (contains)', filter: true, filterMatchMode: 'contains'},
+            {field: 'year', header: 'Year (startsWith)', filter: true},
+            {field: 'color', header: 'Color (endsWith)', filter: true, filterMatchMode: 'endsWith'}
+        ];
+    }
+}
+</pre>            
+        </p-tabPanel>
+
+        <p-tabPanel header="datatablefilterdemo.html">
+<pre>
+&lt;p-dataTable [value]="cars" [columns]="cols" [rows]="10" [paginator]="true"&gt;
+    &lt;header&gt;List of Cars&lt;/header&gt;
+&lt;/p-dataTable&gt;
+</pre>
+        </p-tabPanel>
+    </p-tabView>
+</div>
