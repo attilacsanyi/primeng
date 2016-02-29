@@ -98,6 +98,7 @@ declare module PrimeUI {
         afterHide?: (event?: Event) => void;
         minimize?: (event?: Event) => void;
         maximize?: (event?: Event) => void;
+        clickClose?: (event?: Event) => void;
         enhanced?: boolean;
     }
 
@@ -350,6 +351,27 @@ declare module PrimeUI {
     interface TableScrollOptions {
         scrollHeight?: any;
         scrollWidth?: any;
+    }
+    
+    interface OrderListEventParams {
+        index?: number;
+    }
+    
+    interface OrderListOptions {
+        controlsLocation?: string;
+        dragdrop?: boolean;
+        effect?: string;
+        caption?: string;
+        responsive?: boolean;
+        datasource?: any;
+        content?: any;
+        template?: any;
+        enhanced?: boolean;
+        multiple?: boolean;
+        onMoveUp?: (event?: Event, ui?: OrderListEventParams) => void;
+        onMoveTop?: (event?: Event, ui?: OrderListEventParams) => void;
+        onMoveDown?: (event?: Event, ui?: OrderListEventParams) => void;
+        onMoveBottom?: (event?: Event, ui?: OrderListEventParams) => void;
     }
 }
 
@@ -726,4 +748,16 @@ interface JQuery {
     puitablescroll(optionLiteral: string, optionName: string): any;
     puitablescroll(optionLiteral: string, options: PrimeUI.TableScrollOptions): any;
     puitablescroll(optionLiteral: string, optionName: string, optionValue: any): JQuery;
+    
+    puiorderlist(): JQuery;
+    puiorderlist(methodName: 'destroy'): void;
+    puiorderlist(methodName: 'disable'): void;
+    puiorderlist(methodName: 'enable'): void;
+    puiorderlist(methodName: 'refresh'): void;
+    puiorderlist(methodName: 'widget'): JQuery;
+    puiorderlist(methodName: string): JQuery;
+    puiorderlist(options: PrimeUI.OrderListOptions): JQuery;
+    puiorderlist(optionLiteral: string, optionName: string): any;
+    puiorderlist(optionLiteral: string, options: PrimeUI.OrderListOptions): any;
+    puiorderlist(optionLiteral: string, optionName: string, optionValue: any): JQuery;
 }

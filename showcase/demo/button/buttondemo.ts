@@ -1,6 +1,6 @@
 import {Component} from 'angular2/core';
 import {TabView} from '../../../components/tabview/tabview';
-import {pCode} from '../../../components/codehighlighter/codehighlighter';
+import {CodeHighlighter} from '../../../components/codehighlighter/codehighlighter';
 import {TabPanel} from '../../../components/tabview/tabpanel';
 import {Button} from '../../../components/button/button';
 import {ROUTER_DIRECTIVES} from 'angular2/router';
@@ -36,7 +36,7 @@ import {Button} from 'primeng/primeng';
                     
 <pre>
 <code class="language-markup" pCode>
-&lt;button type="button" pButton&gt;Click&lt;/button/&gt;
+&lt;button type="button" pButton&gt;Click&lt;/button&gt;
 </code>
 </pre>
 
@@ -45,7 +45,7 @@ import {Button} from 'primeng/primeng';
                     
 <pre>
 <code class="language-markup" pCode>
-&lt;button type="button" pButton (click)="onclick()"&gt;Click&lt;/button/&gt;
+&lt;button type="button" pButton (click)="onclick()"&gt;Click&lt;/button&gt;
 </code>
 </pre>
 
@@ -66,7 +66,7 @@ export class Model {
                     icon position is left.</p>
 <pre>
 <code class="language-markup" pCode>
-&lt;button type="button" pButton icon="fa-check'" iconPos="left"&gt;Click&lt;/button/&gt;
+&lt;button type="button" pButton icon="fa-check'" iconPos="left"&gt;Click&lt;/button&gt;
 </code>
 </pre>
 
@@ -132,7 +132,7 @@ export class Model {
                     </div>
 
                     <h3>Dependencies</h3>
-                    <p>jQuery, jQuery UI WidgetFactory API, Prismjs, PrimeUI Button.</p>
+                    <p>PrimeUI Button.</p>
                 </p-tabPanel>
                 <p-tabPanel header="Source">
 <pre>
@@ -160,7 +160,7 @@ export class ButtonDemo {
              </p-tabView >
         </div>
     `,
-    directives: [pCode,Button,TabPanel,TabView,ROUTER_DIRECTIVES]
+    directives: [CodeHighlighter,Button,TabPanel,TabView,ROUTER_DIRECTIVES]
 })
 export class ButtonDemo {
 

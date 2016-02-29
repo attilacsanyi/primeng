@@ -1,6 +1,6 @@
 import {Component} from 'angular2/core';
 import {RadioButton} from '../../../components/radiobutton/radiobutton';
-import {pCode} from '../../../components/codehighlighter/codehighlighter';
+import {CodeHighlighter} from '../../../components/codehighlighter/codehighlighter';
 import {TabView} from '../../../components/tabview/tabview';
 import {TabPanel} from '../../../components/tabview/tabpanel';
 import {ROUTER_DIRECTIVES} from 'angular2/router';
@@ -179,7 +179,7 @@ export class ModelComponent {
                     </div>
 
                     <h3>Dependencies</h3>
-                    <p>Prismjs, PrimeUI radiobutton widget css.</p>
+                    <p>Native component that requires css of PrimeUI RadioButton.</p>
                     
                 </p-tabPanel>
 
@@ -247,7 +247,7 @@ export class RadioButtonDemo {
             margin: 3px 0px 0px 4px;
         }
     `],
-    directives: [RadioButton,TabPanel,TabView,pCode,ROUTER_DIRECTIVES]
+    directives: [RadioButton,TabPanel,TabView,CodeHighlighter,ROUTER_DIRECTIVES]
 })
 export class RadioButtonDemo {
 

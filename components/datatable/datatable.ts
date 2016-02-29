@@ -1,4 +1,4 @@
-import {Component,ElementRef,AfterViewInit,OnDestroy,OnChanges,Input,Output,SimpleChange,EventEmitter,ContentChild} from 'angular2/core';
+import {Component,ElementRef,AfterViewInit,OnDestroy,DoCheck,Input,Output,SimpleChange,EventEmitter,ContentChild,IterableDiffers} from 'angular2/core';
 import {Column} from '../api/column';
 import {Header} from '../common/header';
 import {Footer} from '../common/footer';
@@ -22,7 +22,7 @@ import {InputText} from '../inputtext/inputtext';
                                 <span class="ui-column-title">{{col.header}}</span>
                                 <span class="ui-sortable-column-icon fa fa-fw fa-sort" *ngIf="col.sortable"
                                      [ngClass]="{'fa-sort-desc': (col.field === sortField) && (sortOrder == -1),'fa-sort-asc': (col.field === sortField) && (sortOrder == 1)}"></span>
-                                <input type="text" pInputText class="ui-column-filter" *ngIf="col.filter" (keyup)="onFilterKeyup($event.target.value, col.field, col.filterMatchMode)"/>
+                                <input type="text" pInputText class="ui-column-filter" *ngIf="col.filter" (click)="onFilterInputClick($event)" (keyup)="onFilterKeyup($event.target.value, col.field, col.filterMatchMode)"/>
                             </th>
                         </tr>
                         <tr *ngFor="#headerRow of headerRows" class="ui-state-default">
@@ -32,7 +32,7 @@ import {InputText} from '../inputtext/inputtext';
                                 <span class="ui-column-title">{{col.header}}</span>
                                 <span class="ui-sortable-column-icon fa fa-fw fa-sort" *ngIf="col.sortable"
                                      [ngClass]="{'fa-sort-desc': (col.field === sortField) && (sortOrder == -1),'fa-sort-asc': (col.field === sortField) && (sortOrder == 1)}"></span>
-                                <input type="text" pInputText class="ui-column-filter" *ngIf="col.filter" (keyup)="onFilterKeyup($event.target.value, col.field, col.filterMatchMode)"/>
+                                <input type="text" pInputText class="ui-column-filter" *ngIf="col.filter" (click)="onFilterInputClick($event)" (keyup)="onFilterKeyup($event.target.value, col.field, col.filterMatchMode)"/>
                             </th>
                         </tr>
                     </thead>
@@ -51,7 +51,7 @@ import {InputText} from '../inputtext/inputtext';
                                 (click)="onRowClick($event, rowData)" [ngClass]="{'ui-datatable-even':even,'ui-datatable-odd':odd,'ui-state-hover': (selectionMode && rowElement == hoveredRow), 'ui-state-highlight': isSelected(rowData)}">
                             <td *ngFor="#col of columns" [attr.style]="col.style" [attr.class]="col.styleClass" 
                                 [ngClass]="{'ui-editable-column':col.editable}" (click)="switchCellToEditMode($event.target)">
-                                <span class="ui-column-title" *ngIf="responsive">{{col.headerText}}</span>
+                                <span class="ui-column-title" *ngIf="responsive">{{col.header}}</span>
                                 <span class="ui-cell-data" (click)="switchCellToEditMode($event.target)">{{rowData[col.field]}}</span>
                                 <input type="text" class="ui-cell-editor ui-state-highlight" *ngIf="col.editable" [(ngModel)]="rowData[col.field]" (blur)="switchCellToViewMode($event.target)" (keydown)="onCellEditorKeydown($event)"/>
                             </td>
@@ -70,7 +70,7 @@ import {InputText} from '../inputtext/inputtext';
                                     <span class="ui-column-title">{{col.header}}</span>
                                     <span class="ui-sortable-column-icon fa fa-fw fa-sort" *ngIf="col.sortable"
                                          [ngClass]="{'fa-sort-desc': (col.field === sortField) && (sortOrder == -1),'fa-sort-asc': (col.field === sortField) && (sortOrder == 1)}"></span>
-                                    <input type="text" pInputText class="ui-column-filter" *ngIf="col.filter" (keyup)="onFilterKeyup($event.target.value, col.field, col.filterMatchMode)"/>
+                                    <input type="text" pInputText class="ui-column-filter" *ngIf="col.filter" (click)="onFilterInputClick($event)" (keyup)="onFilterKeyup($event.target.value, col.field, col.filterMatchMode)"/>
                                 </th>
                             </tr>
                         </thead>
@@ -79,20 +79,11 @@ import {InputText} from '../inputtext/inputtext';
             </div>
             <div class="ui-datatable-scrollable-body" *ngIf="scrollable">
                 <table>
-                    <thead class="ui-datatable-scrollable-theadclone">
-                        <tr>
-                            <th *ngFor="#col of columns" [attr.style]="col.style" [attr.class]="col.styleClass" [ngClass]="{'ui-state-default ui-unselectable-text':true}">
-                                <span class="ui-column-title">{{col.headerText}}</span>
-                                <span class="ui-sortable-column-icon fa fa-fw fa-sort" *ngIf="col.sortable"></span>
-                                <input type="text" pInputText class="ui-column-filter" *ngIf="col.filter"/>
-                            </th>
-                        </tr>
-                    </thead>
                     <tbody class="ui-datatable-data ui-widget-content">
                         <tr #rowElement *ngFor="#rowData of dataToRender;#even = even; #odd = odd;" class="ui-widget-content" (mouseenter)="hoveredRow = $event.target" (mouseleave)="hoveredRow = null"
                                 (click)="onRowClick($event, rowData)" [ngClass]="{'ui-datatable-even':even,'ui-datatable-odd':odd,'ui-state-hover': (selectionMode && rowElement == hoveredRow), 'ui-state-highlight': isSelected(rowData)}">
                             <td *ngFor="#col of columns" [attr.style]="col.style" [attr.class]="col.styleClass" [ngClass]="{'ui-editable-column':col.editable}" (click)="switchCellToEditMode($event.target)">
-                                <span class="ui-column-title" *ngIf="responsive">{{col.headerText}}</span>
+                                <span class="ui-column-title" *ngIf="responsive">{{col.header}}</span>
                                 <span class="ui-cell-data" (click)="switchCellToEditMode($event.target)">{{rowData[col.field]}}</span>
                                 <input type="text" class="ui-cell-editor ui-state-highlight" *ngIf="col.editable" [(ngModel)]="rowData[col.field]" (blur)="switchCellToViewMode($event.target)" (keydown)="onCellEditorKeydown($event)"/>
                             </td>
@@ -100,7 +91,7 @@ import {InputText} from '../inputtext/inputtext';
                     </tbody>
                 </table>
             </div>
-            <p-paginator [rows]="rows" [totalRecords]="totalRecords" [pageLinkSize]="pageLinks" (onPageChange)="paginate($event)" *ngIf="paginator"></p-paginator>
+            <p-paginator [rows]="rows" [first]="first" [totalRecords]="totalRecords" [pageLinkSize]="pageLinks" (onPageChange)="paginate($event)" *ngIf="paginator"></p-paginator>
             <div class="ui-datatable-footer ui-widget-header" *ngIf="footer">
                 <ng-content select="footer"></ng-content>
             </div>
@@ -108,7 +99,9 @@ import {InputText} from '../inputtext/inputtext';
     `,
     directives: [Paginator,InputText]
 })
-export class DataTable implements AfterViewInit {
+export class DataTable implements AfterViewInit,DoCheck {
+
+    @Input() value: any[];
 
     @Input() columns: Column[];
 
@@ -137,6 +130,8 @@ export class DataTable implements AfterViewInit {
     @Input() filterDelay: number = 300;
 
     @Input() lazy: boolean;
+    
+    @Output() onLazyLoad: EventEmitter<any> = new EventEmitter();
 
     @Input() resizableColumns: boolean;
 
@@ -166,11 +161,11 @@ export class DataTable implements AfterViewInit {
 
     @ContentChild(Footer) footer;
 
-    private _value: any[];
-
     private dataToRender: any[];
 
     private first: number = 0;
+    
+    private page: number = 0;
 
     private sortField: string;
 
@@ -181,12 +176,24 @@ export class DataTable implements AfterViewInit {
     private filterMetadata: any = {};
 
     private filteredValue: any[];
+    
+    differ: any;
 
-    constructor(private el: ElementRef) {
-
+    constructor(private el: ElementRef, differs: IterableDiffers) {
+        this.differ = differs.find([]).create(null);
     }
 
     ngAfterViewInit() {
+        if(this.lazy) {
+            this.onLazyLoad.next({
+                first: this.first,
+                rows: this.rows,
+                sortField: this.sortField,
+                sortOrder: this.sortOrder,
+                filters: null
+            });
+        }
+        
         if(this.resizableColumns) {
             this.initResizableColumns();
         }
@@ -199,27 +206,46 @@ export class DataTable implements AfterViewInit {
             this.initScrolling();
         }
     }
+    
+    ngDoCheck() {
+        let changes = this.differ.diff(this.value);
 
-    @Input() get value(): any[] {
-        return this._value;
+        if(changes) {
+            if(this.paginator) {
+                this.updatePaginator();
+            }
+            this.updateDataToRender(this.value);
+        }
     }
-
-    set value(val:any[]) {
-        this._value = val;
-        this.totalRecords = this._value ? this._value.length: 0;
-        this.updateDataToRender(this._value);
+    
+    updatePaginator() {
+        //total records
+        this.totalRecords = this.lazy ? this.totalRecords : (this.value ? this.value.length: 0);
+        
+        //first
+        if(this.totalRecords && this.first >= this.totalRecords) {
+            let numberOfPages = Math.ceil(this.totalRecords/this.rows);
+            this.first = Math.max((numberOfPages-1) * this.rows, 0);
+        }
     }
 
     paginate(event) {
         this.first = event.first;
         this.rows = event.rows;
-        this.updateDataToRender(this._value);
+        
+        if(this.lazy) {
+            this.onLazyLoad.next(this.createLazyLoadMetadata());
+        }
+        else {
+            this.updateDataToRender(this.value);
+        }
     }
 
     updateDataToRender(datasource) {
         if(this.paginator && datasource) {
             this.dataToRender = [];
-            for(let i = this.first; i < (this.first + this.rows); i++) {
+            let startIndex = this.lazy ? 0 : this.first;
+            for(let i = startIndex; i < (startIndex+ this.rows); i++) {
                 if(i >= datasource.length) {
                     break;
                 }
@@ -236,30 +262,35 @@ export class DataTable implements AfterViewInit {
         if(!column.sortable) {
             return;
         }
+        
+        this.sortOrder = (this.sortField === column.field)  ? this.sortOrder * -1 : 1;
+        this.sortField = column.field;
 
-        if(this._value) {
-            this.sortOrder = (this.sortField === column.field)  ? this.sortOrder * -1 : 1;
-            this.sortField = column.field;
+        if(this.lazy) {
+            this.onLazyLoad.next(this.createLazyLoadMetadata());
+        }
+        else {
+            if(this.value) {
+                this.value.sort((data1, data2) => {
+                    let value1 = data1[this.sortField],
+                    value2 = data2[this.sortField],
+                    result = null;
 
-            this._value.sort((data1, data2) => {
-                let value1 = data1[this.sortField],
-                value2 = data2[this.sortField],
-                result = null;
+                    if (value1 instanceof String && value2 instanceof String)
+                        result = value1.localeCompare(value2);
+                    else
+                        result = (value1 < value2) ? -1 : (value1 > value2) ? 1 : 0;
 
-                if (value1 instanceof String && value2 instanceof String)
-                    result = value1.localeCompare(value2);
+                    return (this.sortOrder * result);
+                });
+
+                this.first = 0;
+
+                if(this.hasFilter())
+                    this.filter();
                 else
-                    result = (value1 < value2) ? -1 : (value1 > value2) ? 1 : 0;
-
-                return (this.sortOrder * result);
-            });
-
-            this.first = 0;
-
-            if(this.hasFilter())
-                this.filter();
-            else
-                this.updateDataToRender(this._value);
+                    this.updateDataToRender(this.value);
+            }
         }
     }
 
@@ -344,12 +375,12 @@ export class DataTable implements AfterViewInit {
 
     filter() {
         if(this.lazy) {
-            //TODO
+            this.onLazyLoad.next(this.createLazyLoadMetadata());
         }
         else {
             this.filteredValue = [];
 
-            for(let i = 0; i < this._value.length; i++) {
+            for(let i = 0; i < this.value.length; i++) {
                 let localMatch = true;
 
                 for(let prop in this.filterMetadata) {
@@ -358,7 +389,7 @@ export class DataTable implements AfterViewInit {
                             filterValue = filterMeta.value,
                             filterField = prop,
                             filterMatchMode = filterMeta.matchMode||'startsWith',
-                            dataFieldValue = this._value[i][filterField];
+                            dataFieldValue = this.value[i][filterField];
 
                         var filterConstraint = this.filterConstraints[filterMatchMode];
                         if(!filterConstraint(dataFieldValue, filterValue)) {
@@ -372,11 +403,11 @@ export class DataTable implements AfterViewInit {
                 }
 
                 if(localMatch) {
-                    this.filteredValue.push(this._value[i]);
+                    this.filteredValue.push(this.value[i]);
                 }
             }
 
-            if(this.filteredValue.length === this._value.length) {
+            if(this.filteredValue.length === this.value.length) {
                 this.filteredValue = null;
             }
 
@@ -384,7 +415,7 @@ export class DataTable implements AfterViewInit {
                 this.totalRecords = this.filteredValue ? this.filteredValue.length: this.value ? this.value.length: 0;
             }
 
-            this.updateDataToRender(this.filteredValue||this._value);
+            this.updateDataToRender(this.filteredValue||this.value);
         }
     }
 
@@ -398,6 +429,10 @@ export class DataTable implements AfterViewInit {
         }
 
         return !empty;
+    }
+    
+    onFilterInputClick(event) {
+        event.stopPropagation();
     }
 
     filterConstraints = {
@@ -521,7 +556,17 @@ export class DataTable implements AfterViewInit {
     isEmpty() {
         return !this.dataToRender||(this.dataToRender.length == 0);
     }
-
+    
+    createLazyLoadMetadata(): any {
+        return {
+            first: this.first,
+            rows: this.rows,
+            sortField: this.sortField,
+            sortOrder: this.sortOrder,
+            filters: this.filterMetadata
+        };
+    }
+    
     ngOnDestroy() {
         if(this.resizableColumns) {
             jQuery(this.el.nativeElement.children[0]).puicolresize('destroy');
