@@ -1,32 +1,12 @@
 <div class="ContentSideSections">
     <div class="Content100 overHidden TextShadow">
-        <span class="fontSize30 TextShadow orange mediumFont marginBottom20 dispBlock">Listbox</span>
-        <span class="defaultText dispTable">Listbox is used to select one or more values from a list of items.</span>
+        <span class="fontSize30 TextShadow orange mediumFont marginBottom20 dispBlock">Schedule</span>
+        <span class="defaultText dispTable">Schedule is an event calendar based on FullCalendar.</span>
     </div>
 </div>
 
 <div class="ContentSideSections Implementation">
-    <h3 class="first">Single</h3>
-    <p-listbox [options]="cities" [(value)]="selectedCity"></p-listbox>
-
-    <p>Selected City: {{selectedCity}}</p>
-
-    <h3>Multiple</h3>
-    <p-listbox [options]="cities" [(value)]="selectedCities" multiple="multiple"></p-listbox>
-    <p>Selected Cities: <span *ngFor="#c of selectedCities">{{c}} &nbsp;</span></p>
-
-    <h3>Content</h3>
-    <p-listbox [options]="cars" [(value)]="selectedCar" style="width:190px">
-        <template #car>
-            <li class="ui-helper-clearfix">
-                <img src="showcase/resources/demo/images/car/{{car.label}}.gif" style="display:inline-block;margin:2px 0 2px 2px"/>
-                <div style="font-size:20px;float:right;margin:15px 10px 0 0">{{car.value}}</div>
-            </li>
-        </template>
-    </p-listbox>
-    <p>Selected Car: {{selectedCar}}</p>
-
-    <button type="button" (click)="selectedCar=null" pButton icon="fa-close">Clear Selected Car</button>
+    <p-schedule [events]="events"></p-schedule>
 </div>
 
 <div class="ContentSideSections Source">
@@ -35,7 +15,7 @@
             <h3>Import</h3>
 <pre>
 <code class="language-typescript" pCode>
-import {Listbox} from 'primeng/primeng';
+import {Schedule} from 'primeng/primeng';
 </code>
 </pre>
 
@@ -136,7 +116,7 @@ export class MyModel {
         this.cars.push({label: 'Jaguar', value: 'Jaguar'});
         this.cars.push({label: 'Mercedes', value: 'Mercedes'});
         this.cars.push({label: 'Renault', value: 'Renault'});
-        this.cars.push({label: 'VW', value: 'VW'});
+        this.cars.push({label: 'Volkswagen', value: 'Volkswagen'});
         this.cars.push({label: 'Volvo', value: 'Volvo'});
     }
 }
@@ -306,7 +286,7 @@ export class ListboxDemo {
         this.cars.push({label: 'Jaguar', value: 'Jaguar'});
         this.cars.push({label: 'Mercedes', value: 'Mercedes'});
         this.cars.push({label: 'Renault', value: 'Renault'});
-        this.cars.push({label: 'VW', value: 'VW'});
+        this.cars.push({label: 'Volkswagen', value: 'Volkswagen'});
         this.cars.push({label: 'Volvo', value: 'Volvo'});
     }
 }
