@@ -1,7 +1,7 @@
 import {Component,OnInit} from 'angular2/core';
 import {ROUTER_DIRECTIVES} from 'angular2/router';
 import {HTTP_PROVIDERS}    from 'angular2/http';
-import {DataGrid} from '../../../components/datagrid/datagrid';
+import {DataList} from '../../../components/datalist/datalist';
 import {Header} from '../../../components/common/header';
 import {Footer} from '../../../components/common/footer';
 import {Panel} from '../../../components/panel/panel';
@@ -14,11 +14,21 @@ import {Car} from '../domain/car';
 import {CarService} from '../service/carservice';
 
 @Component({
-    templateUrl: 'showcase/demo/datagrid/datagriddemo.html',
-    directives: [DataGrid,Header,Footer,Dialog,Panel,Button,TabPanel,TabView,CodeHighlighter,ROUTER_DIRECTIVES],
-    providers: [HTTP_PROVIDERS,CarService]
+    templateUrl: 'showcase/demo/datalist/datalistdemo.html',
+    directives: [DataList,Header,Footer,Dialog,Panel,Button,TabPanel,TabView,CodeHighlighter,ROUTER_DIRECTIVES],
+    providers: [HTTP_PROVIDERS,CarService],
+    styles: [`
+        .ui-grid-row > div {
+            padding: 4px 10px;
+            font-size: 20px;
+        }
+        
+        .ui-grid-row .ui-grid-row > div:last-child {
+            font-weight: bold;
+        }
+    `]
 })
-export class DataGridDemo implements OnInit {
+export class DataListDemo implements OnInit {
 
     cars: Car[];
     

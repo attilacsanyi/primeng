@@ -2,27 +2,46 @@
 
 <div class="ContentSideSections">
     <div class="Content100 overHidden TextShadow">
-        <span class="fontSize30 TextShadow orange mediumFont marginBottom20 dispBlock">DataGrid</span>
-        <span class="defaultText dispTable">DataGrid displays data in grid format.</span>
+        <span class="fontSize30 TextShadow orange mediumFont marginBottom20 dispBlock">DataList</span>
+        <span class="defaultText dispTable">DataList displays data in list layout.</span>
     </div>
 </div>
 
 <div class="ContentSideSections Implementation">
-    <p-dataGrid [value]="cars" [columns]="5" [paginator]="true" [rows]="20">
+    <p-dataList [value]="cars" [paginator]="true" [rows]="5">
         <header>
             List of Cars
         </header>
         <template #car>
-            <div style="padding:3px">
-                <p-panel [header]="car.vin" [paginator]="true" style="text-align:center">
-                    <img src="showcase/resources/demo/images/car/{{car.brand}}.gif">
-                    <div class="car-detail">{{car.year}} - {{car.color}}</div>
-                    <hr class="ui-widget-content" style="border-top:0">
-                    <i class="fa fa-search" (click)="selectCar(car)" style="cursor:pointer"></i>
-                </p-panel>
-            </div>
+            <li style="border-bottom:1px solid #D5D5D5;">
+                <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-3" style="text-align:center"><i class="fa fa-search" (click)="selectCar(car)" style="cursor:pointer;float:left;margin-top:40px"></i><img src="showcase/resources/demo/images/car/{{car.brand}}-big.gif"></div>
+                        <div class="ui-grid-col-9">
+                            <div class="ui-grid ui-grid-responsive ui-fluid">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-2">Vin: </div>
+                                    <div class="ui-grid-col-10">{{car.vin}}</div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-2">Year: </div>
+                                    <div class="ui-grid-col-10">{{car.year}}</div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-2">Brand: </div>
+                                    <div class="ui-grid-col-10">{{car.brand}}</div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-2">Color: </div>
+                                    <div class="ui-grid-col-10">{{car.color}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
         </template>
-    </p-dataGrid>
+    </p-dataList>
         
     <p-dialog header="Car Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" width="225" (onAfterHide)="onDialogHide()">
         <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selectedCar" style="font-size:16px;text-align:center;padding:20px">
@@ -55,12 +74,12 @@
             <h3>Import</h3>
 <pre>
 <code class="language-typescript" pCode>
-import {DataGrid} from 'primeng/primeng';
+import {DataList} from 'primeng/primeng';
 </code>
 </pre>
 
             <h3>Getting Started</h3>
-            <p>DataGrid requires a collection of items as its value and a template to display each item. Template should contain a div element as a wrapper. Number of columns is defined with colums option.</p><p>Throughout the samples, a car interface having vin, brand, year and color properties are used to define an object to be displayed by the datagrid. Cars are loaded by a CarService that connects to a server to fetch the cars with a Promise.</p>
+            <p>DataList requires a collection of items as its value and a template to display each item. Template should contain a li element as a wrapper. </p><p>Throughout the samples, a car interface having vin, brand, year and color properties are used to define an object to be displayed by the datalist. Cars are loaded by a CarService that connects to a server to fetch the cars with a Promise.</p>
 <pre>
 <code class="language-typescript" pCode>
 export interface Car {
@@ -93,10 +112,10 @@ export class CarService {
 </code>
 </pre>
         
-            <p>Here is a sample DataGrid that displays a list of cars where each row contains 3 cars.</p>
+            <p>Here is a sample DataList that displays a list of cars where each row contains 3 cars.</p>
 <pre>
 <code class="language-typescript" pCode>
-export class DataGridDemo implements OnInit {
+export class DataListDemo implements OnInit {
 
     cars: Car[];
 
@@ -111,13 +130,13 @@ export class DataGridDemo implements OnInit {
 
 <pre>
 <code class="language-markup" pCode>
-&lt;p-dataGrid [value]="cars" [columns]="3"&gt;
+&lt;p-dataList [value]="cars"&gt;
     &lt;template #car&gt;
-        &lt;div&gt;
+        &lt;li&gt;
             Car content
-        &lt;/div&gt;
+        &lt;/li&gt;
     &lt;/template&gt;
-&lt;/p-dataGrid&gt;
+&lt;/p-dataList&gt;
 </code>
 </pre>
 
@@ -131,15 +150,15 @@ import {Footer} from 'primeng/primeng';
 </pre>
 <pre>
 <code class="language-markup" pCode>
-&lt;p-dataGrid [value]="cars" [columns]="5"&gt;
+&lt;p-dataList [value]="cars" [columns]="5"&gt;
     &lt;header&gt;List of Cars&lt;/header&gt;
     &lt;footer&gt;Choose from the list.&lt;/footer&gt;
     &lt;template #car&gt;
-        &lt;div&gt;
+        &lt;li&gt;
             Car content
-        &lt;/div&gt;
+        &lt;/li&gt;
     &lt;/template&gt;
-&lt;/p-dataGrid&gt;
+&lt;/p-dataList&gt;
 </code>
 </pre>
             
@@ -148,13 +167,13 @@ import {Footer} from 'primeng/primeng';
                 of page links to display.</p>
 <pre>
 <code class="language-markup" pCode>
-&lt;p-dataGrid [value]="cars" [columns]="3" [paginator]="true" [rows]="9"&gt;
+&lt;p-dataList [value]="cars" [paginator]="true" [rows]="9"&gt;
     &lt;template #car&gt;
-        &lt;div&gt;
+        &lt;li&gt;
             Car content
-        &lt;/div&gt;
+        &lt;/li&gt;
     &lt;/template&gt;
-&lt;/p-dataGrid&gt;
+&lt;/p-dataList&gt;
 </code>
 </pre>
     
@@ -166,13 +185,13 @@ import {Footer} from 'primeng/primeng';
             displays the UI assuming there are actually records of totalRecords size although in reality they aren't as in lazy mode, only the records that are displayed on the current page exist.</p>
 <pre>
 <code class="language-markup" pCode>
-&lt;p-dataGrid [value]="cars" [columns]="3" [paginator]="true" [rows]="9" [lazy]="true" (onLazyLoad)="loadData($event)" [totalRecords]="totalRecords"&gt;
+&lt;p-dataList [value]="cars" [columns]="3" [paginator]="true" [rows]="9" [lazy]="true" (onLazyLoad)="loadData($event)" [totalRecords]="totalRecords"&gt;
     &lt;template #car&gt;
-        &lt;div&gt;
+        &lt;li&gt;
             Car content
-        &lt;/div&gt;
+        &lt;/li&gt;
     &lt;/template&gt;
-&lt;/p-dataGrid&gt;
+&lt;/p-dataList&gt;
 </code>
 </pre>
 
@@ -184,9 +203,6 @@ loadData(event) {
 }
 </code>
 </pre>
-
-            <h3>Responsive</h3>
-            <p>DataGrid is responsive by default, when the screen gets smaller than a certain value, items are displayed as stacked.</p>
 
             <h3>Attributes</h3>
             <div class="doc-tablewrapper">
@@ -205,12 +221,6 @@ loadData(event) {
                             <td>array</td>
                             <td>null</td>
                             <td>An array of objects to display.</td>
-                        </tr>
-                        <tr>
-                            <td>columns</td>
-                            <td>number</td>
-                            <td>3</td>
-                            <td>Number of .</td>
                         </tr>
                         <tr>
                             <td>rows</td>
@@ -291,48 +301,71 @@ loadData(event) {
                     </thead>
                     <tbody>
                         <tr>
-                            <td>ui-datagrid</td>
+                            <td>ui-datalist</td>
                             <td>Container element.</td>
                         </tr>
                         <tr>
-                            <td>ui-datagrid-header</td>
+                            <td>ui-datalist-header</td>
                             <td>Header section.</td>
                         </tr>
                         <tr>
-                            <td>ui-datagrid-footer</td>
+                            <td>ui-datalist-footer</td>
                             <td>Footer section.</td>
                         </tr>
                         <tr>
-                            <td>ui-datagrid-content</td>
-                            <td>Container of items.</td>
+                            <td>ui-datalist-content</td>
+                            <td>Wrapper of item container.</td>
+                        </tr>
+                        <tr>
+                            <td>ui-datalist-data</td>
+                            <td>Item container element.</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <h3>Dependencies</h3>
-            <p>Native component that requires css of PrimeUI DataGrid.</p>
+            <p>Native component that requires css of PrimeUI DataList.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-dataGrid [value]="cars" [columns]="5" [paginator]="true" [rows]="20"&gt;
+&lt;p-dataList [value]="cars" [paginator]="true" [rows]="5"&gt;
     &lt;header&gt;
         List of Cars
     &lt;/header&gt;
     &lt;template #car&gt;
-        &lt;div style="padding:3px"&gt;
-            &lt;p-panel [header]="car.vin" [paginator]="true" style="text-align:center"&gt;
-                &lt;img src="showcase/resources/demo/images/car/{{car.brand}}.gif"&gt;
-                &lt;div class="car-detail"&gt;{{car.year}} - {{car.color}}&lt;/div&gt;
-                &lt;hr class="ui-widget-content" style="border-top:0"&gt;
-                &lt;i class="fa fa-search" (click)="selectCar(car)" style="cursor:pointer"&gt;&lt;/i&gt;
-            &lt;/p-panel&gt;
-        &lt;/div&gt;
+        &lt;li style="border-bottom:1px solid #D5D5D5;"&gt;
+            &lt;div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px"&gt;
+                &lt;div class="ui-grid-row"&gt;
+                    &lt;div class="ui-grid-col-3" style="text-align:center"&gt;&lt;i class="fa fa-search" (click)="selectCar(car)" style="cursor:pointer;float:left;margin-top:40px"&gt;&lt;/i&gt;&lt;img src="showcase/resources/demo/images/car/{{car.brand}}-big.gif"&gt;&lt;/div&gt;
+                    &lt;div class="ui-grid-col-9"&gt;
+                        &lt;div class="ui-grid ui-grid-responsive ui-fluid"&gt;
+                            &lt;div class="ui-grid-row"&gt;
+                                &lt;div class="ui-grid-col-2"&gt;Vin: &lt;/div&gt;
+                                &lt;div class="ui-grid-col-10"&gt;{{car.vin}}&lt;/div&gt;
+                            &lt;/div&gt;
+                            &lt;div class="ui-grid-row"&gt;
+                                &lt;div class="ui-grid-col-2"&gt;Year: &lt;/div&gt;
+                                &lt;div class="ui-grid-col-10"&gt;{{car.year}}&lt;/div&gt;
+                            &lt;/div&gt;
+                            &lt;div class="ui-grid-row"&gt;
+                                &lt;div class="ui-grid-col-2"&gt;Brand: &lt;/div&gt;
+                                &lt;div class="ui-grid-col-10"&gt;{{car.brand}}&lt;/div&gt;
+                            &lt;/div&gt;
+                            &lt;div class="ui-grid-row"&gt;
+                                &lt;div class="ui-grid-col-2"&gt;Color: &lt;/div&gt;
+                                &lt;div class="ui-grid-col-10"&gt;{{car.color}}&lt;/div&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
     &lt;/template&gt;
-&lt;/p-dataGrid&gt;
-
+&lt;/p-dataList&gt;
+    
 &lt;p-dialog header="Car Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" width="225" (onAfterHide)="onDialogHide()"&gt;
     &lt;div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selectedCar" style="font-size:16px;text-align:center;padding:20px"&gt;
         &lt;div class="ui-grid-row"&gt;
@@ -360,7 +393,7 @@ loadData(event) {
 </pre>
 <pre>
 <code class="language-typescript" pCode>
-export class DataGridDemo implements OnInit {
+export class DataListDemo implements OnInit {
 
     cars: Car[];
     
