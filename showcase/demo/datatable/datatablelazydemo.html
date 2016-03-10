@@ -11,15 +11,19 @@
 </div>
 
 <div class="ContentSideSections Implementation">
-    <p-dataTable [value]="cars" [columns]="cols" [lazy]="true" [rows]="10" [paginator]="true" 
-                        [totalRecords]="totalRecords" (onLazyLoad)="loadCarsLazy($event)">
+    <p-dataTable [value]="cars" [lazy]="true" [rows]="10" [paginator]="true" 
+                [totalRecords]="totalRecords" (onLazyLoad)="loadCarsLazy($event)">
         <header>List of Cars</header>
+        <p-column field="vin" header="Vin"></p-column>
+        <p-column field="year" header="Year"></p-column>
+        <p-column field="brand" header="Brand"></p-column>
+        <p-column field="color" header="Color"></p-column>
     </p-dataTable>
 </div>
 
 <div class="ContentSideSections Source">
     <p-tabView effect="fade">
-        <p-tabPanel header="datatablepaginatordemo.ts">
+        <p-tabPanel header="datatablelazydemo.ts">
 <pre>
 <code class="language-typescript" pCode>
 export class DataTableLazyDemo implements OnInit {
@@ -27,8 +31,6 @@ export class DataTableLazyDemo implements OnInit {
     datasource: Car[];
     
     cars: Car[];
-
-    cols: Column[];
     
     totalRecords: number;
 
@@ -37,13 +39,6 @@ export class DataTableLazyDemo implements OnInit {
     ngOnInit() {
         //datasource imitation
         this.carService.getCarsLarge().then(cars => {this.datasource = cars; this.totalRecords = this.datasource.length;});
-
-        this.cols = [
-            {field: 'vin', header: 'Vin'},
-            {field: 'brand', header: 'Brand'},
-            {field: 'year', header: 'Year'},
-            {field: 'color', header: 'Color'}
-        ];
     }
     
     loadCarsLazy(event) {
@@ -67,9 +62,13 @@ export class DataTableLazyDemo implements OnInit {
         <p-tabPanel header="datatablelazydemo.html">
 <pre>
 <code class="language-markup" pCode>
-&lt;p-dataTable [value]="cars" [columns]="cols" [lazy]="true" [rows]="10" [paginator]="true" 
-                    [totalRecords]="totalRecords" (onLazyLoad)="loadCarsLazy($event)"&gt;
+&lt;p-dataTable [value]="cars" [lazy]="true" [rows]="10" [paginator]="true" 
+            [totalRecords]="totalRecords" (onLazyLoad)="loadCarsLazy($event)"&gt;
     &lt;header&gt;List of Cars&lt;/header&gt;
+    &lt;p-column field="vin" header="Vin"&gt;&lt;/p-column&gt;
+    &lt;p-column field="year" header="Year"&gt;&lt;/p-column&gt;
+    &lt;p-column field="brand" header="Brand"&gt;&lt;/p-column&gt;
+    &lt;p-column field="color" header="Color"&gt;&lt;/p-column&gt;
 &lt;/p-dataTable&gt;
 </code>
 </pre>

@@ -1,5 +1,6 @@
-import {Component,ElementRef,AfterViewInit,OnDestroy,DoCheck,Input,Output,SimpleChange,EventEmitter,ContentChild,IterableDiffers} from 'angular2/core';
-import {Column} from '../api/column';
+import {Component,ElementRef,AfterViewInit,AfterViewChecked,OnInit,OnDestroy,DoCheck,Input,Output,SimpleChange,EventEmitter,ContentChild,ContentChildren,IterableDiffers,Query,QueryList} from 'angular2/core';
+import {Column} from '../column/column';
+import {ColumnTemplateLoader} from '../column/columntemplateloader';
 import {Header} from '../common/header';
 import {Footer} from '../common/footer';
 import {Paginator} from '../paginator/paginator';
@@ -52,7 +53,10 @@ import {InputText} from '../inputtext/inputtext';
                             <td *ngFor="#col of columns" [attr.style]="col.style" [attr.class]="col.styleClass" 
                                 [ngClass]="{'ui-editable-column':col.editable}" (click)="switchCellToEditMode($event.target)">
                                 <span class="ui-column-title" *ngIf="responsive">{{col.header}}</span>
-                                <span class="ui-cell-data" (click)="switchCellToEditMode($event.target)">{{rowData[col.field]}}</span>
+                                <span class="ui-cell-data" (click)="switchCellToEditMode($event.target)" *ngIf="!col.template">{{rowData[col.field]}}</span>
+                                <span class="ui-cell-data" (click)="switchCellToEditMode($event.target)" *ngIf="col.template">
+                                    <p-columnTemplateLoader [column]="col" [rowData]="rowData"></p-columnTemplateLoader>
+                                </span>
                                 <input type="text" class="ui-cell-editor ui-state-highlight" *ngIf="col.editable" [(ngModel)]="rowData[col.field]" (blur)="switchCellToViewMode($event.target)" (keydown)="onCellEditorKeydown($event)"/>
                             </td>
                         </tr>
@@ -97,14 +101,12 @@ import {InputText} from '../inputtext/inputtext';
             </div>
         </div>
     `,
-    directives: [Paginator,InputText]
+    directives: [Paginator,InputText,ColumnTemplateLoader]
 })
-export class DataTable implements AfterViewInit,DoCheck {
+export class DataTable implements AfterViewInit,AfterViewChecked,OnInit,DoCheck {
 
     @Input() value: any[];
-
-    @Input() columns: Column[];
-
+        
     @Input() paginator: boolean;
 
     @Input() rows: number;
@@ -177,13 +179,21 @@ export class DataTable implements AfterViewInit,DoCheck {
 
     private filteredValue: any[];
     
+    private columns: Column[];
+    
+    private columnsUpdated: boolean = false;
+        
     differ: any;
 
-    constructor(private el: ElementRef, differs: IterableDiffers) {
+    constructor(private el: ElementRef, differs: IterableDiffers, @Query(Column) cols: QueryList<Column>) {
         this.differ = differs.find([]).create(null);
+        cols.changes.subscribe(_ => {
+            this.columns = cols.toArray();
+            this.columnsUpdated = true;
+        });
     }
 
-    ngAfterViewInit() {
+    ngOnInit() {
         if(this.lazy) {
             this.onLazyLoad.next({
                 first: this.first,
@@ -193,20 +203,26 @@ export class DataTable implements AfterViewInit,DoCheck {
                 filters: null
             });
         }
-        
-        if(this.resizableColumns) {
-            this.initResizableColumns();
-        }
-
-        if(this.reorderableColumns) {
-            this.initColumnReordering();
-        }
-
-        if(this.scrollable) {
-            this.initScrolling();
-        }
     }
     
+    ngAfterViewChecked() {
+        if(this.columnsUpdated) {
+            if(this.resizableColumns) {
+                this.initResizableColumns();
+            }
+
+            if(this.reorderableColumns) {
+                this.initColumnReordering();
+            }
+            
+            if(this.scrollable) {
+                this.initScrolling();
+            }
+            
+            this.columnsUpdated = false;
+        }
+    }
+     
     ngDoCheck() {
         let changes = this.differ.diff(this.value);
 
@@ -544,11 +560,14 @@ export class DataTable implements AfterViewInit,DoCheck {
             return true;
         }
         else {
-            for(let i = 0; i  < this.columns.length; i++) {
-                if(this.columns[i].footer) {
-                    return true;
+            if(this.columns) {
+                for(let i = 0; i  < this.columns.length; i++) {
+                    if(this.columns[i].footer) {
+                        return true;
+                    }
                 }
             }
+            
         }
         return false;
     }
@@ -570,6 +589,10 @@ export class DataTable implements AfterViewInit,DoCheck {
     ngOnDestroy() {
         if(this.resizableColumns) {
             jQuery(this.el.nativeElement.children[0]).puicolresize('destroy');
+        }
+        
+        if(this.reorderableColumns) {
+            jQuery(this.el.nativeElement.children[0]).puicolreorder('destroy');
         }
     }
 }

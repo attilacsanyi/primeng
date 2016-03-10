@@ -9,8 +9,12 @@
 </div>
 
 <div class="ContentSideSections Implementation">
-    <p-dataTable [value]="cars" [columns]="cols" editable="true"></p-dataTable>
-
+    <p-dataTable [value]="cars" [editable]="true">
+        <p-column field="vin" header="Vin" [editable]="true"></p-column>
+        <p-column field="year" header="Year" [editable]="true"></p-column>
+        <p-column field="brand" header="Brand" [editable]="true"></p-column>
+        <p-column field="color" header="Color" [editable]="true"></p-column>
+    </p-dataTable>
 </div>
 
 <div class="ContentSideSections Source">
@@ -22,19 +26,10 @@ export class DataTableEditableDemo implements OnInit {
 
     cars: Car[];
 
-    cols: Column[];
-
     constructor(private carService: CarService) { }
 
     ngOnInit() {
         this.carService.getCarsSmall().then(cars => this.cars = cars);
-
-        this.cols = [
-            {field: 'vin', header: 'Vin', editable: true},
-            {field: 'brand', header: 'Brand', editable: true},
-            {field: 'year', header: 'Year', editable: true},
-            {field: 'color', header: 'Color', editable: true}
-        ];
     }
 }
 </code>
@@ -44,7 +39,12 @@ export class DataTableEditableDemo implements OnInit {
         <p-tabPanel header="datatableeditabledemo.html">
 <pre>
 <code class="language-markup" pCode>
-&lt;p-dataTable [value]="cars" [columns]="cols" editable="true"&gt;&lt;/p-dataTable&gt;
+&lt;p-dataTable [value]="cars" [editable]="true"&gt;
+    &lt;p-column field="vin" header="Vin" [editable]="true"&gt;&lt;/p-column&gt;
+    &lt;p-column field="year" header="Year" [editable]="true"&gt;&lt;/p-column&gt;
+    &lt;p-column field="brand" header="Brand" [editable]="true"&gt;&lt;/p-column&gt;
+    &lt;p-column field="color" header="Color" [editable]="true"&gt;&lt;/p-column&gt;
+&lt;/p-dataTable&gt;
 </code>
 </pre>
         </p-tabPanel>

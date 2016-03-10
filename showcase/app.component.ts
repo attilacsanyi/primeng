@@ -58,12 +58,17 @@ import {DataTableScrollDemo} from "./demo/datatable/datatablescrolldemo";
 import {DataTableGroupDemo} from "./demo/datatable/datatablegroupdemo";
 import {DataTableCrudDemo} from "./demo/datatable/datatablecruddemo";
 import {DataTableLazyDemo} from "./demo/datatable/datatablelazydemo";
+import {DataTableTemplatingDemo} from "./demo/datatable/datatabletemplatingdemo";
 import {CodeHighlighterDemo} from "./demo/codehighlighter/codehighlighterdemo";
 import {OrderListDemo} from "./demo/orderlist/orderlistdemo";
 import {PickListDemo} from "./demo/picklist/picklistdemo";
 import {ScheduleDemo} from "./demo/schedule/scheduledemo";
 import {DataGridDemo} from "./demo/datagrid/datagriddemo";
 import {DataListDemo} from "./demo/datalist/datalistdemo";
+import {DataScrollerDemo} from "./demo/datascroller/datascrollerdemo";
+import {DataScrollerInlineDemo} from "./demo/datascroller/datascrollerinlinedemo";
+import {DataScrollerLoaderDemo} from "./demo/datascroller/datascrollerloaderdemo";
+import {DataScrollerInfiniteDemo} from "./demo/datascroller/datascrollerinfinitedemo";
 
 @Component({
     selector: 'primeng-showcase',
@@ -129,12 +134,17 @@ import {DataListDemo} from "./demo/datalist/datalistdemo";
     {path: '/datatablegroup', name: 'DataTableGroupDemo', component: DataTableGroupDemo},
     {path: '/datatablelazy', name: 'DataTableLazyDemo', component: DataTableLazyDemo},
     {path: '/datatablecrud', name: 'DataTableCrudDemo', component: DataTableCrudDemo},
+    {path: '/datatabletemplating', name: 'DataTableTemplatingDemo', component: DataTableTemplatingDemo},
     {path: '/codehighlighter', name: 'CodeHighlighterDemo', component: CodeHighlighterDemo},
     {path: '/orderlist', name: 'OrderListDemo', component: OrderListDemo},
     {path: '/picklist', name: 'PickListDemo', component: PickListDemo},
     {path: '/schedule', name: 'ScheduleDemo', component: ScheduleDemo},
     {path: '/datagrid', name: 'DataGridDemo', component: DataGridDemo},
-    {path: '/datalist', name: 'DataListDemo', component: DataListDemo}
+    {path: '/datalist', name: 'DataListDemo', component: DataListDemo},
+    {path: '/datascroller', name: 'DataScrollerDemo', component: DataScrollerDemo},
+    {path: '/datascrollerinline', name: 'DataScrollerInlineDemo', component: DataScrollerInlineDemo},
+    {path: '/datascrollerloader', name: 'DataScrollerLoaderDemo', component: DataScrollerLoaderDemo},
+    {path: '/datascrollerinfinite', name: 'DataScrollerInfiniteDemo', component: DataScrollerInfiniteDemo}
 ])
 export class AppComponent {
 
