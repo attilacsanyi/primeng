@@ -1,10 +1,13 @@
-import {Component,ElementRef,AfterViewInit,AfterViewChecked,OnInit,OnDestroy,DoCheck,Input,Output,SimpleChange,EventEmitter,ContentChild,ContentChildren,IterableDiffers,Query,QueryList} from 'angular2/core';
+import {Component,ElementRef,AfterViewChecked,OnInit,OnDestroy,DoCheck,Input,Output,SimpleChange,EventEmitter,ContentChild,ContentChildren,IterableDiffers,Query,QueryList} from 'angular2/core';
 import {Column} from '../column/column';
 import {ColumnTemplateLoader} from '../column/columntemplateloader';
 import {Header} from '../common/header';
 import {Footer} from '../common/footer';
 import {Paginator} from '../paginator/paginator';
 import {InputText} from '../inputtext/inputtext';
+import {LazyLoadEvent} from '../api/lazyload';
+import {FilterMetadata} from '../api/lazyload';
+import {DomHandler} from '../dom/domhandler';
 
 @Component({
     selector: 'p-dataTable',
@@ -51,10 +54,10 @@ import {InputText} from '../inputtext/inputtext';
                         <tr #rowElement *ngFor="#rowData of dataToRender;#even = even; #odd = odd;" class="ui-widget-content" (mouseenter)="hoveredRow = $event.target" (mouseleave)="hoveredRow = null"
                                 (click)="onRowClick($event, rowData)" [ngClass]="{'ui-datatable-even':even,'ui-datatable-odd':odd,'ui-state-hover': (selectionMode && rowElement == hoveredRow), 'ui-state-highlight': isSelected(rowData)}">
                             <td *ngFor="#col of columns" [attr.style]="col.style" [attr.class]="col.styleClass" 
-                                [ngClass]="{'ui-editable-column':col.editable}" (click)="switchCellToEditMode($event.target)">
+                                [ngClass]="{'ui-editable-column':col.editable}" (click)="switchCellToEditMode($event.target,col)">
                                 <span class="ui-column-title" *ngIf="responsive">{{col.header}}</span>
-                                <span class="ui-cell-data" (click)="switchCellToEditMode($event.target)" *ngIf="!col.template">{{rowData[col.field]}}</span>
-                                <span class="ui-cell-data" (click)="switchCellToEditMode($event.target)" *ngIf="col.template">
+                                <span class="ui-cell-data" *ngIf="!col.template">{{rowData[col.field]}}</span>
+                                <span class="ui-cell-data" *ngIf="col.template">
                                     <p-columnTemplateLoader [column]="col" [rowData]="rowData"></p-columnTemplateLoader>
                                 </span>
                                 <input type="text" class="ui-cell-editor ui-state-highlight" *ngIf="col.editable" [(ngModel)]="rowData[col.field]" (blur)="switchCellToViewMode($event.target)" (keydown)="onCellEditorKeydown($event)"/>
@@ -86,9 +89,9 @@ import {InputText} from '../inputtext/inputtext';
                     <tbody class="ui-datatable-data ui-widget-content">
                         <tr #rowElement *ngFor="#rowData of dataToRender;#even = even; #odd = odd;" class="ui-widget-content" (mouseenter)="hoveredRow = $event.target" (mouseleave)="hoveredRow = null"
                                 (click)="onRowClick($event, rowData)" [ngClass]="{'ui-datatable-even':even,'ui-datatable-odd':odd,'ui-state-hover': (selectionMode && rowElement == hoveredRow), 'ui-state-highlight': isSelected(rowData)}">
-                            <td *ngFor="#col of columns" [attr.style]="col.style" [attr.class]="col.styleClass" [ngClass]="{'ui-editable-column':col.editable}" (click)="switchCellToEditMode($event.target)">
+                            <td *ngFor="#col of columns" [attr.style]="col.style" [attr.class]="col.styleClass" [ngClass]="{'ui-editable-column':col.editable}" (click)="switchCellToEditMode($event.target,col)">
                                 <span class="ui-column-title" *ngIf="responsive">{{col.header}}</span>
-                                <span class="ui-cell-data" (click)="switchCellToEditMode($event.target)">{{rowData[col.field]}}</span>
+                                <span class="ui-cell-data">{{rowData[col.field]}}</span>
                                 <input type="text" class="ui-cell-editor ui-state-highlight" *ngIf="col.editable" [(ngModel)]="rowData[col.field]" (blur)="switchCellToViewMode($event.target)" (keydown)="onCellEditorKeydown($event)"/>
                             </td>
                         </tr>
@@ -101,9 +104,10 @@ import {InputText} from '../inputtext/inputtext';
             </div>
         </div>
     `,
-    directives: [Paginator,InputText,ColumnTemplateLoader]
+    directives: [Paginator,InputText,ColumnTemplateLoader],
+    providers: [DomHandler]
 })
-export class DataTable implements AfterViewInit,AfterViewChecked,OnInit,DoCheck {
+export class DataTable implements AfterViewChecked,OnInit,DoCheck {
 
     @Input() value: any[];
         
@@ -175,7 +179,7 @@ export class DataTable implements AfterViewInit,AfterViewChecked,OnInit,DoCheck 
 
     private filterTimeout: any;
 
-    private filterMetadata: any = {};
+    private filters: {[s: string]: FilterMetadata;} = {};
 
     private filteredValue: any[];
     
@@ -184,8 +188,8 @@ export class DataTable implements AfterViewInit,AfterViewChecked,OnInit,DoCheck 
     private columnsUpdated: boolean = false;
         
     differ: any;
-
-    constructor(private el: ElementRef, differs: IterableDiffers, @Query(Column) cols: QueryList<Column>) {
+    
+    constructor(private el: ElementRef, private domHandler: DomHandler, differs: IterableDiffers, @Query(Column) cols: QueryList<Column>) {
         this.differ = differs.find([]).create(null);
         cols.changes.subscribe(_ => {
             this.columns = cols.toArray();
@@ -383,7 +387,7 @@ export class DataTable implements AfterViewInit,AfterViewChecked,OnInit,DoCheck 
         }
 
         this.filterTimeout = setTimeout(() => {
-            this.filterMetadata[field] = {value: value, matchMode: matchMode};
+            this.filters[field] = {value: value, matchMode: matchMode};
             this.filter();
             this.filterTimeout = null;
         }, this.filterDelay);
@@ -399,9 +403,9 @@ export class DataTable implements AfterViewInit,AfterViewChecked,OnInit,DoCheck 
             for(let i = 0; i < this.value.length; i++) {
                 let localMatch = true;
 
-                for(let prop in this.filterMetadata) {
-                    if(this.filterMetadata.hasOwnProperty(prop)) {
-                        let filterMeta = this.filterMetadata[prop],
+                for(let prop in this.filters) {
+                    if(this.filters.hasOwnProperty(prop)) {
+                        let filterMeta = this.filters[prop],
                             filterValue = filterMeta.value,
                             filterField = prop,
                             filterMatchMode = filterMeta.matchMode||'startsWith',
@@ -437,8 +441,8 @@ export class DataTable implements AfterViewInit,AfterViewChecked,OnInit,DoCheck 
 
     hasFilter() {
         let empty = true;
-        for(let prop in this.filterMetadata) {
-            if(this.filterMetadata.hasOwnProperty(prop)) {
+        for(let prop in this.filters) {
+            if(this.filters.hasOwnProperty(prop)) {
                 empty = false;
                 break;
             }
@@ -490,18 +494,22 @@ export class DataTable implements AfterViewInit,AfterViewChecked,OnInit,DoCheck 
         }
     }
 
-    switchCellToEditMode(element: any) {
-        if(!this.selectionMode && this.editable) {
+    switchCellToEditMode(element: any, column: Column) {
+        if(!this.selectionMode && this.editable && column.editable) {
             let cell = this.findCell(element);
-            cell.classList.add('ui-cell-editing','ui-state-highlight');
-            let editor = cell.querySelector('.ui-cell-editor').focus();
+            if(!this.domHandler.hasClass(cell, 'ui-cell-editing')) {
+                this.domHandler.addClass(cell, 'ui-cell-editing');
+                this.domHandler.addClass(cell, 'ui-state-highlight');
+                let editor = cell.querySelector('.ui-cell-editor').focus();
+            }
         }
     }
 
     switchCellToViewMode(element: any) {
         if(this.editable) {
             let cell = this.findCell(element);
-            cell.classList.remove('ui-cell-editing','ui-state-highlight');
+            this.domHandler.removeClass(cell, 'ui-cell-editing');
+            this.domHandler.removeClass(cell, 'ui-state-highlight');
         }
     }
 
@@ -576,13 +584,13 @@ export class DataTable implements AfterViewInit,AfterViewChecked,OnInit,DoCheck 
         return !this.dataToRender||(this.dataToRender.length == 0);
     }
     
-    createLazyLoadMetadata(): any {
+    createLazyLoadMetadata(): LazyLoadEvent {
         return {
             first: this.first,
             rows: this.rows,
             sortField: this.sortField,
             sortOrder: this.sortOrder,
-            filters: this.filterMetadata
+            filters: this.filters
         };
     }
     

@@ -13,11 +13,11 @@
 
     <h3>Multiple</h3>
     <p-selectButton [options]="types" [(value)]="selectedTypes" multiple="multiple"></p-selectButton>
-    <p>Selected Types: {{selectedTypes}}</p>
+    <p>Selected Types: <span *ngFor="#type of selectedTypes">{{type}} </span></p>
 
     <hr />
 
-    <button type="button" (click)="clear()" pButton icon="fa-close">Clear</button>
+    <button type="button" (click)="clear()" pButton icon="fa-close" label="Clear"></button>
 </div>
 
 <div class="ContentSideSections Source">
@@ -62,7 +62,7 @@ export class MyModel {
 </pre>
 
             <h3>Multiple</h3>
-            <p>SelectButton allows selecting only one item by default and setting multiple option enables choosing more than one item. In multiple case, model property should be an array.</p>
+            <p>SelectButton allows selecting only one item by default and setting multiple option enables choosing more than one item. In multiple case, model property should be an array instance that is not null or undefined.</p>
 <pre>
 <code class="language-markup" pCode>
 &lt;p-selectButton [options]="cities" [(value)]="selectedCities"&gt;&lt;/p-selectButton&gt;
@@ -77,7 +77,7 @@ export class MyModel {
 
     cities: SelectItem[];
 
-    selectedCities: string[];
+    selectedCities: string[] = [];
 
     constructor() {
         this.cities = [];
@@ -146,7 +146,7 @@ export class MyModel {
                     <tr>
                         <td>onChange</td>
                         <td>event.originalEvent: browser event<br />
-                            evebt.value: single value or an array of values that are selected
+                            event.value: single value or an array of values that are selected
                         </td>
                         <td>Callback to invoke when value changes.</td>
                     </tr>
@@ -155,7 +155,7 @@ export class MyModel {
             </div>
 
             <h3>Dependencies</h3>
-            <p>PrimeUI SelectButton.</p>
+            <p>Native component that requires css of PrimeUI SelectButton.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">
@@ -168,11 +168,11 @@ export class MyModel {
 
 &lt;h3&gt;Multiple&lt;/h3&gt;
 &lt;p-selectButton [options]="types" [(value)]="selectedTypes" multiple="multiple"&gt;&lt;/p-selectButton&gt;
-&lt;p&gt;Selected Types: {{selectedTypes}}&lt;/p&gt;
+&lt;p&gt;Selected Types: &lt;span *ngFor="#type of selectedTypes"&gt;{{type}} &lt;/span&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 
-&lt;button type="button" (click)="clear()" pButton icon="fa-close"&gt;Clear&lt;/button&gt;
+&lt;button type="button" (click)="clear()" pButton icon="fa-close" label="Clear"&gt;&lt;/button&gt;
 </code>
 </pre>
 
