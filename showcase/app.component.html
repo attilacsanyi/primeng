@@ -29,6 +29,7 @@
             <span id="button_menutitle" #buttonmenutitle class="MenuSideMainLink bordersOfMenuSide" [class.MenuSideMainLinkDark]="buttonmenutitle.id == activeMenuId" (click)="activeMenuId = buttonmenutitle.id"><img src="showcase/resources/images/mono/button.svg" /><img class="hiddenIcons" src="showcase/resources/images/mono/buttonBlue.svg" /><span class="MainLinkText">Button</span></span>
             <div class="SubMenuLinkContainer" [ngClass]="{'submenushow': (buttonmenutitle.id == activeMenuId), 'submenuhide': (buttonmenutitle.id != activeMenuId)}">
                 <a class="SubMenuLink" [routerLink]="['ButtonDemo']" (click)="mobileMenuActive = false">&#9679; Button</a>
+                <a class="SubMenuLink" [routerLink]="['SplitButtonDemo']" (click)="mobileMenuActive = false">&#9679; SplitButton</a>
             </div>
 
             <span id="data_menutitle" #datamenutitle class="MenuSideMainLink bordersOfMenuSide" [class.MenuSideMainLinkDark]="datamenutitle.id == activeMenuId" (click)="activeMenuId = datamenutitle.id"><img src="showcase/resources/images/mono/data.svg" /><img class="hiddenIcons" src="showcase/resources/images/mono/dataBlue.svg" /><span class="MainLinkText">Data</span></span>
@@ -43,6 +44,7 @@
                 <a class="SubMenuLink" [routerLink]="['PickListDemo']" (click)="mobileMenuActive = false">&#9679; PickList</a>
                 <a class="SubMenuLink" [routerLink]="['ScheduleDemo']" (click)="mobileMenuActive = false">&#9679; Schedule</a>
                 <a class="SubMenuLink" [routerLink]="['TreeDemo']" (click)="mobileMenuActive = false">&#9679; Tree</a>
+                <a class="SubMenuLink" [routerLink]="['TreeTableDemo']" (click)="mobileMenuActive = false">&#9679; TreeTable</a>
             </div>
 
             <span id="menu_panel" #panelmenutitle class="MenuSideMainLink bordersOfMenuSide" [class.MenuSideMainLinkDark]="panelmenutitle.id == activeMenuId" (click)="activeMenuId = panelmenutitle.id"><img src="showcase/resources/images/mono/panel.svg" /><img class="hiddenIcons" src="showcase/resources/images/mono/panelBlue.svg" /><span class="MainLinkText">Panel</span></span>
@@ -58,6 +60,7 @@
             <div class="SubMenuLinkContainer" [ngClass]="{'submenushow': (overlaymenutitle.id == activeMenuId), 'submenuhide': (overlaymenutitle.id != activeMenuId)}">
                 <a class="SubMenuLink" [routerLink]="['DialogDemo']" (click)="mobileMenuActive = false">&#9679; Dialog</a>
                 <a class="SubMenuLink" [routerLink]="['LightboxDemo']" (click)="mobileMenuActive = false">&#9679; Lightbox</a>
+                <a class="SubMenuLink" [routerLink]="['OverlayPanelDemo']" (click)="mobileMenuActive = false">&#9679; OverlayPanel</a>
             </div>
 
             <span id="menu_menu" #menumenutitle class="MenuSideMainLink bordersOfMenuSide" [class.MenuSideMainLinkDark]="menumenutitle.id == activeMenuId" (click)="activeMenuId = menumenutitle.id"><img src="showcase/resources/images/mono/menu.svg" /><img class="hiddenIcons" src="showcase/resources/images/mono/menuBlue.svg" /><span class="MainLinkText">Menu</span></span>
@@ -108,6 +111,7 @@
                 <a class="SubMenuLink" [routerLink]="['Theming']" (click)="mobileMenuActive = false">&#9679; Theming</a>
                 <a class="SubMenuLink" [routerLink]="['ProgressBarDemo']" (click)="mobileMenuActive = false">&#9679; ProgressBar</a>
                 <a class="SubMenuLink" [routerLink]="['CodeHighlighterDemo']" (click)="mobileMenuActive = false">&#9679; CodeHighlighter</a>
+                <a class="SubMenuLink" [routerLink]="['TerminalDemo']" (click)="mobileMenuActive = false">&#9679; Terminal</a>
             </div>
         </div>
     </div>

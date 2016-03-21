@@ -20,4 +20,18 @@ export class NodeService {
                     .then(res => <TreeNode[]> res.json().data)
                     .then(data => { return data; });
     }
+    
+    getFilesystem() {
+        return this.http.get('showcase/resources/data/filesystem.json')
+                    .toPromise()
+                    .then(res => <TreeNode[]> res.json().data)
+                    .then(data => { return data; });
+    }
+    
+    getLazyFilesystem() {
+        return this.http.get('showcase/resources/data/filesystem-lazy.json')
+                    .toPromise()
+                    .then(res => <TreeNode[]> res.json().data)
+                    .then(data => { return data; });
+    }
 }

@@ -48,6 +48,47 @@ export class DomHandler {
         return -1;
     }
     
+    public relativePosition(element: any, target: any):void {
+        let elementOuterHeight = this.getHiddenElementOuterHeight(element);
+        let targetHeight = target.offsetHeight;
+        let targetOffset = target.getBoundingClientRect();
+        let top;
+        
+        if((targetOffset.top + targetHeight + elementOuterHeight) > window.innerHeight)
+            top = -1* (elementOuterHeight);
+        else
+            top = targetHeight;
+                
+        element.style.top = top+ 'px';
+        element.style.left = 0 + 'px';
+    }
+    
+    public absolutePosition(element: any, target: any): void {
+        let elementOuterHeight = element.offsetParent ? element.offsetHeight : this.getHiddenElementOuterHeight(element);
+        let targetOuterHeight = target.offsetHeight;
+        let targetOffset = target.getBoundingClientRect();
+        let windowScrollTop = this.getWindowScrollTop();
+        let top;
+
+        if(targetOffset.top + targetOuterHeight + elementOuterHeight > window.innerHeight)
+            top = targetOffset.top + windowScrollTop - elementOuterHeight;
+        else
+            top = targetOuterHeight + targetOffset.top + windowScrollTop;
+        
+        element.style.top = top + 'px';
+        element.style.left = targetOffset.left + 'px';
+    }
+    
+    public getHiddenElementOuterHeight(element: any): number {
+        element.style.visibility = 'hidden';
+        element.style.display = 'block';
+        let elementHeight = element.offsetHeight;
+        element.style.display = 'none';
+        element.style.visibility = 'visible';
+        
+        return elementHeight;
+    }
+    
     public scrollInView(container, item) {   
         let borderTopValue: string = getComputedStyle(container).getPropertyValue('borderTopWidth');
         let borderTop: number = borderTopValue ? parseFloat(borderTopValue) : 0;
@@ -67,12 +108,33 @@ export class DomHandler {
             container.scrollTop = scroll + offset - elementHeight + itemHeight;
         }
     }
-    
+        
     public getOuterHeight(element): number {
         let height: number = element.offsetHeight;
         let style: any = getComputedStyle(element);
 
         height += parseInt(style.marginTop) + parseInt(style.marginBottom);
         return height;
+    }
+    
+    public fadeIn(element, duration: number):void {
+        element.style.opacity = 0;
+
+        let last = +new Date();
+        let tick = function() {
+            element.style.opacity = +element.style.opacity + (new Date().getTime() - last) / duration;
+            last = +new Date();
+
+            if (+element.style.opacity < 1) {
+              (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16);
+            }
+        };
+
+        tick();
+    }
+    
+    public getWindowScrollTop(): number {
+        let doc = document.documentElement;
+        return (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
     }
 }

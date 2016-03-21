@@ -126,7 +126,7 @@ export class DataTableDemo implements OnInit {
                             <td>Header text of a column.</td>
                         </tr>
                         <tr>
-                            <td>header</td>
+                            <td>footer</td>
                             <td>string</td>
                             <td>null</td>
                             <td>Footer text of a column.</td>
@@ -328,6 +328,45 @@ this.headerRows = [
 &lt;p-column field="vin" header="Vin"&gt;&lt;/p-column&gt;
 </code>
 </pre>
+            <p>By default sorting is executed on the clicked column. To do multiple field sorting, set sortMode property to "multiple" and use metakey 
+            when clicking on another column.</p>
+<pre>
+<code class="language-markup" pCode>
+&lt;p-dataTable [value]="cars" [sortMode]="multiple"&gt;
+</code>
+</pre>
+
+            <p>In case you'd like to display the table as sorted by default initially on load, use the sortField-sortOrder properties in single mode.</p>
+<pre>
+<code class="language-markup" pCode>
+&lt;p-dataTable [value]="cars" sortField="year" [sortOrder]="1"&gt;
+    &lt;p-column field="vin" header="Vin"&gt;&lt;/p-column&gt;
+    &lt;p-column field="year" header="Year"&gt;&lt;/p-column&gt;
+    &lt;p-column field="brand" header="Brand"&gt;&lt;/p-column&gt;
+    &lt;p-column field="color" header="Color"&gt;&lt;/p-column&gt;
+&lt;/p-dataTable&gt;
+</code>
+</pre>
+            <p>In multiple mode, use the multiSortMeta property and bind an array of SortMeta objects.</p>
+<pre>
+<code class="language-markup" pCode>
+&lt;p-dataTable [value]="cars" [multiSortMeta]="multiSortMeta"&gt;
+    &lt;p-column field="vin" header="Vin"&gt;&lt;/p-column&gt;
+    &lt;p-column field="year" header="Year"&gt;&lt;/p-column&gt;
+    &lt;p-column field="brand" header="Brand"&gt;&lt;/p-column&gt;
+    &lt;p-column field="color" header="Color"&gt;&lt;/p-column&gt;
+&lt;/p-dataTable&gt;
+</code>
+</pre>
+
+<pre>
+<code class="language-typescript" pCode>
+this.multiSortMeta = [];
+this.multiSortMeta.push({field: 'year', order: 1});
+this.multiSortMeta.push({field: 'brand', order: -1});
+</code>
+</pre>        
+            
             <p>See the <a [routerLink]="['DataTableSortDemo']">live example.</a></p>
 
             <h3>Filtering</h3>
@@ -341,6 +380,15 @@ this.headerRows = [
 &lt;p-column field="color" header="Color (endsWith)" [filter]="true" filterMatchMode="endsWith"&gt;&lt;/p-column&gt;
 </code>
 </pre>
+            <p>An optional global filter feature is available to search all fields with the same keyword, to enable this place an input component whose keyup event would be 
+            listened for filtering and bind the local template variable name of it to the global filter property.</p>
+<pre>
+<code class="language-markup" pCode>
+&lt;input #gb type="text" placeholder="Global search"&gt;
+&lt;p-dataTable [value]="cars" [rows]="10" [globalFilter]="gb"&gt;
+</code>
+</pre>
+        
             <p>See the <a [routerLink]="['DataTableFilterDemo']">live example.</a></p>
 
             <h3>Selection</h3>
@@ -482,14 +530,15 @@ export class DataTableDemo implements OnInit {
 &lt;/p-dataTable&gt;
 </code>
 </pre>
-
+            
 <pre>
-<code class="language-ts" pCode>
+<code class="language-typescript" pCode>
 loadData(event: LazyLoadEvent) {
     //event.first = First row offset
     //event.rows = Number of rows per page
-    //event.sortField = Field name to sort with
-    //event.sortOrder = Sort order as number, 1 for asc and -1 for dec
+    //event.sortField = Field name to sort in single sort mode
+    //event.sortOrder = Sort order as number, 1 for asc and -1 for dec in single sort mode
+    //multiSortMeta: An array of SortMeta objects used in multiple columns sorting. Each SortMeta has field and order properties.
     //filters: Filters object having field as key and filter value, filter matchMode as value
     this.cars = //do a request to a remote datasource using a service and return the cars that match the lazy load criteria
 }
@@ -567,6 +616,30 @@ loadData(event: LazyLoadEvent) {
                             <td>Number of page links to display in paginator.</td>
                         </tr>
                         <tr>
+                            <td>sortMode</td>
+                            <td>string</td>
+                            <td>single</td>
+                            <td>Defines whether sorting works on single column or on multiple columns.</td>
+                        </tr>
+                        <tr>
+                            <td>sortField</td>
+                            <td>string</td>
+                            <td>null</td>
+                            <td>Name of the field to sort data by default.</td>
+                        </tr>
+                        <tr>
+                            <td>sortOrder</td>
+                            <td>number</td>
+                            <td>null</td>
+                            <td>Order to sort the data by default.</td>
+                        </tr>
+                        <tr>
+                            <td>multiSortMeta</td>
+                            <td>array</td>
+                            <td>null</td>
+                            <td>An array of SortMeta objects to sort the data by default in multiple sort mode.</td>
+                        </tr>
+                        <tr>
                             <td>responsive</td>
                             <td>boolean</td>
                             <td>false</td>
@@ -589,6 +662,12 @@ loadData(event: LazyLoadEvent) {
                             <td>boolean</td>
                             <td>false</td>
                             <td>Activates incell editing when enabled.</td>
+                        </tr>
+                        <tr>
+                            <td>globalFilter</td>
+                            <td>any</td>
+                            <td>null</td>
+                            <td>Reference of an input field to use as a global filter.</td>
                         </tr>
                         <tr>
                             <td>filterDelay</td>
@@ -692,7 +771,7 @@ loadData(event: LazyLoadEvent) {
                             <td>onColReorder</td>
                             <td>event.dragIndex: Index of the dragged column <br>
                                 event.dropIndex: Index of the dropped column <br>
-                                event.dropSide: -1 for left side and +1 for right side of dropped column</td>
+                                event.columns: Columns array after reorder. <br></td>
                             <td>Callback to invoke when a column is reordered.</td>
                         </tr>
                         <tr>
@@ -703,6 +782,31 @@ loadData(event: LazyLoadEvent) {
                                 event.sortOrder = Sort order as number, 1 for asc and -1 for dec <br>
                                 filters: FilterMetadata object having field as key and filter value, filter matchMode as value</td>
                             <td>Callback to invoke when paging, sorting or filtering happens in lazy mode.</td>
+                        </tr>
+                        <tr>
+                            <td>onEditInit</td>
+                            <td>event.column: Column object of the cell<br>
+                                event.data: Row data</td>
+                            <td>Callback to invoke when a cell switches to edit mode.</td>
+                        </tr>
+                        <tr>
+                            <td>onEdit</td>
+                            <td>event.originalEvent: Browser event
+                                event.column: Column object of the cell<br>
+                                event.data: Row data</td>
+                            <td>Callback to invoke when cell data is being edited.</td>
+                        </tr>
+                        <tr>
+                            <td>onEditComplete</td>
+                            <td>event.column: Column object of the cell<br>
+                                event.data: Row data</td>
+                            <td>Callback to invoke when cell edit is completed.</td>
+                        </tr>
+                        <tr>
+                            <td>onEditCancel</td>
+                            <td>event.column: Column object of the cell<br>
+                                event.data: Row data</td>
+                            <td>Callback to invoke when cell edit is cancelled with escape key.</td>
                         </tr>
                     </tbody>
                 </table>
