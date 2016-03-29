@@ -103,7 +103,8 @@ import {DomHandler} from '../dom/domhandler';
                     </tbody>
                 </table>
             </div>
-            <p-paginator [rows]="rows" [first]="first" [totalRecords]="totalRecords" [pageLinkSize]="pageLinks" (onPageChange)="paginate($event)" *ngIf="paginator"></p-paginator>
+            <p-paginator [rows]="rows" [first]="first" [totalRecords]="totalRecords" [pageLinkSize]="pageLinks" styleClass="ui-paginator-bottom"
+                (onPageChange)="paginate($event)" *ngIf="paginator"></p-paginator>
             <div class="ui-datatable-footer ui-widget-header" *ngIf="footer">
                 <ng-content select="footer"></ng-content>
             </div>
@@ -275,7 +276,7 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
             }
             this.updateDataToRender(this.value);
             
-            if((this.sortField || this.multiSortMeta) && !this.sortedByDefault) {
+            if(!this.lazy && !this.sortedByDefault && (this.sortField || this.multiSortMeta)) {
                 this.sortByDefault();
                 this.sortedByDefault = true;
             }
