@@ -1,5 +1,5 @@
 import {Component} from 'angular2/core';
-import {Dropdown} from '../../../components/dropdown/dropdown';
+import {MultiSelect} from '../../../components/multiselect/multiselect';
 import {CodeHighlighter} from '../../../components/codehighlighter/codehighlighter';
 import {TabView} from '../../../components/tabview/tabview';
 import {TabPanel} from '../../../components/tabview/tabpanel';
@@ -8,28 +8,16 @@ import {SelectItem} from '../../../components/api/selectitem';
 import {ROUTER_DIRECTIVES} from 'angular2/router';
 
 @Component({
-    templateUrl: 'showcase/demo/dropdown/dropdown.html',
-    directives: [Dropdown,TabPanel,TabView,Button,CodeHighlighter,ROUTER_DIRECTIVES]
+    templateUrl: 'showcase/demo/multiselect/multiselectdemo.html',
+    directives: [MultiSelect,TabPanel,TabView,Button,CodeHighlighter,ROUTER_DIRECTIVES]
 })
-export class DropdownDemo {
-
-    cities: SelectItem[];
-
-    selectedCity: string;
+export class MultiSelectDemo {
 
     cars: SelectItem[];
 
-    selectedCar: string = 'BMW';
+    selectedCars: string[] = [];
 
     constructor() {
-        this.cities = [];
-        this.cities.push({label:'Select City', value:''});
-        this.cities.push({label:'New York', value:'New York'});
-        this.cities.push({label:'Rome', value:'Rome'});
-        this.cities.push({label:'London', value:'London'});
-        this.cities.push({label:'Istanbul', value:'Istanbul'});
-        this.cities.push({label:'Paris', value:'Paris'});
-
         this.cars = [];
         this.cars.push({label: 'Audi', value: 'Audi'});
         this.cars.push({label: 'BMW', value: 'BMW'});
@@ -42,5 +30,4 @@ export class DropdownDemo {
         this.cars.push({label: 'VW', value: 'VW'});
         this.cars.push({label: 'Volvo', value: 'Volvo'});
     }
-    
 }
