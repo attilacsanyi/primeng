@@ -59,6 +59,7 @@ import {DataTableGroupDemo} from "./demo/datatable/datatablegroupdemo";
 import {DataTableCrudDemo} from "./demo/datatable/datatablecruddemo";
 import {DataTableLazyDemo} from "./demo/datatable/datatablelazydemo";
 import {DataTableTemplatingDemo} from "./demo/datatable/datatabletemplatingdemo";
+import {DataTableCMDemo} from "./demo/datatable/datatablecmdemo";
 import {CodeHighlighterDemo} from "./demo/codehighlighter/codehighlighterdemo";
 import {OrderListDemo} from "./demo/orderlist/orderlistdemo";
 import {PickListDemo} from "./demo/picklist/picklistdemo";
@@ -79,6 +80,7 @@ import {EditorDemo} from "./demo/editor/editordemo";
 import {ResponsiveDemo} from "./demo/responsive/responsivedemo";
 import {MultiSelectDemo} from "./demo/multiselect/multiselectdemo";
 import {GMapDemo} from "./demo/gmap/gmapdemo";
+import {ContextMenuDemo} from "./demo/contextmenu/contextmenudemo";
 
 @Component({
     selector: 'primeng-showcase',
@@ -145,6 +147,7 @@ import {GMapDemo} from "./demo/gmap/gmapdemo";
     {path: '/datatablelazy', name: 'DataTableLazyDemo', component: DataTableLazyDemo},
     {path: '/datatablecrud', name: 'DataTableCrudDemo', component: DataTableCrudDemo},
     {path: '/datatabletemplating', name: 'DataTableTemplatingDemo', component: DataTableTemplatingDemo},
+    {path: '/datatablecontextmenu', name: 'DataTableCMDemo', component: DataTableCMDemo},
     {path: '/codehighlighter', name: 'CodeHighlighterDemo', component: CodeHighlighterDemo},
     {path: '/orderlist', name: 'OrderListDemo', component: OrderListDemo},
     {path: '/picklist', name: 'PickListDemo', component: PickListDemo},
@@ -164,7 +167,8 @@ import {GMapDemo} from "./demo/gmap/gmapdemo";
     {path: '/editor', name: 'EditorDemo', component: EditorDemo},
     {path: '/responsive', name: 'ResponsiveDemo', component: ResponsiveDemo},
     {path: '/multiselect', name: 'MultiSelectDemo', component: MultiSelectDemo},
-    {path: '/gmap', name: 'GMapDemo', component: GMapDemo}
+    {path: '/gmap', name: 'GMapDemo', component: GMapDemo},
+    {path: '/contextmenu', name: 'ContextMenuDemo', component: ContextMenuDemo}
 ])
 export class AppComponent {
 
