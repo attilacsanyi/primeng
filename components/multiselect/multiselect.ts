@@ -17,7 +17,7 @@ const MULTISELECT_VALUE_ACCESSOR: Provider = CONST_EXPR(
 @Component({
     selector: 'p-multiSelect',
     template: `
-        <div [ngClass]="{'ui-multiselect ui-widget ui-state-default ui-corner-all':true}" [attr.style]="style" [attr.styleClass]="styleClass"
+        <div [ngClass]="{'ui-multiselect ui-widget ui-state-default ui-corner-all':true,'ui-state-focus': focus}" [attr.style]="style" [attr.styleClass]="styleClass"
             (mouseenter)="onMouseenter($event)" (mouseleave)="onMouseleave($event)" (click)="onMouseclick($event,in)">
             <div class="ui-helper-hidden-accessible">
                 <input #in type="text" readonly="readonly" (focus)="onFocus($event)" (blur)="onBlur($event)">
@@ -28,7 +28,7 @@ const MULTISELECT_VALUE_ACCESSOR: Provider = CONST_EXPR(
             <div [ngClass]="{'ui-multiselect-trigger ui-state-default ui-corner-right':true,'ui-state-hover':hover,'ui-state-focus':focus}">
                 <span class="fa fa-fw fa-caret-down"></span>
             </div>
-            <div class="ui-multiselect-panel ui-widget ui-widget-content ui-corner-all" [style.display]="overlayVisible ? 'block' : 'none'" (click)="panelClick=true">
+            <div class="ui-multiselect-panel ui-widget ui-widget-content ui-corner-all ui-shadow" [style.display]="overlayVisible ? 'block' : 'none'" (click)="panelClick=true">
                 <div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix">
                     <div class="ui-chkbox ui-widget">
                         <div class="ui-helper-hidden-accessible">

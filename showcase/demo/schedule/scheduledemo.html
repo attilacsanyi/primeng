@@ -17,15 +17,15 @@
             </div>
             <div class="ui-grid-row">
                 <div class="ui-grid-col-4"><label for="start">Start</label></div>
-                <div class="ui-grid-col-8"><p-calendar id="start" dateFormat="yy-mm-dd" [(value)]="event.start"></p-calendar></div>
+                <div class="ui-grid-col-8"><p-calendar id="start" dateFormat="yy-mm-dd" [(ngModel)]="event.start"></p-calendar></div>
             </div>
             <div class="ui-grid-row">
                 <div class="ui-grid-col-4"><label for="end">End</label></div>
-                <div class="ui-grid-col-8"><p-calendar id="end" dateFormat="yy-mm-dd" [(value)]="event.end" defaultDate="2016-01-01" placeholder="Optional"></p-calendar></div>
+                <div class="ui-grid-col-8"><p-calendar id="end" dateFormat="yy-mm-dd" [(ngModel)]="event.end" defaultDate="2016-01-01" placeholder="Optional"></p-calendar></div>
             </div>
             <div class="ui-grid-row">
                 <div class="ui-grid-col-4"><label for="allday">All Day</label></div>
-                <div class="ui-grid-col-8"><p-checkbox [(checked)]="event.allDay"></p-checkbox></div>
+                <div class="ui-grid-col-8"><p-checkbox [(ngModel)]="event.allDay"></p-checkbox></div>
             </div>
         </div>
         <footer>
@@ -165,7 +165,35 @@ export class MyModel {
 }
 </code>
 </pre>
-            
+
+            <h3>Localization</h3>
+            <p>Localization for different languages and formats is defined by binding the settings object to the locale property. 
+                Following is a schedule with Spanish month names.</p>
+<pre>
+<code class="language-markup" pCode>
+&lt;p-schedule [events]="events" [locale]="es"&gt;&lt;/p-schedule&gt;
+</code>
+</pre>
+
+<pre>
+<code class="language-typescript" pCode>
+export class MyModel {
+
+    es: any;
+
+    ngOnInit() {
+        this.es = {
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio',
+                'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+        };
+    }
+}
+</code>
+</pre>
+            <p>Visit the <a href="http://fullcalendar.io/docs/text/">fullcalendar documentation</a> for the available options. 
+                Existing translations are available at <a href="https://github.com/fullcalendar/fullcalendar/tree/master/lang">here</a>.
+            </p>
+
             <h3>Attributes</h3>
             <div class="doc-tablewrapper">
                 <table class="doc-table">
@@ -203,9 +231,9 @@ export class MyModel {
                             <td><a href="http://fullcalendar.io/docs/display/hiddenDays/">Read more</a></td>
                         </tr>
                         <tr>
-                            <td>lang</td>
-                            <td>string</td>
-                            <td><a href="http://fullcalendar.io/docs/text/lang/">Read more</a></td>
+                            <td>locale</td>
+                            <td>object</td>
+                            <td><a href="http://fullcalendar.io/docs/text/">Read more</a></td>
                         </tr>
                         <tr>
                             <td>fixedWeekCount</td>
@@ -433,15 +461,15 @@ export class MyModel {
         &lt;/div&gt;
         &lt;div class="ui-grid-row"&gt;
             &lt;div class="ui-grid-col-4"&gt;&lt;label for="start"&gt;Start&lt;/label&gt;&lt;/div&gt;
-            &lt;div class="ui-grid-col-8"&gt;&lt;p-calendar id="start" dateFormat="yy-mm-dd" [(value)]="event.start"&gt;&lt;/p-calendar&gt;&lt;/div&gt;
+            &lt;div class="ui-grid-col-8"&gt;&lt;p-calendar id="start" dateFormat="yy-mm-dd" [(ngModel)]="event.start"&gt;&lt;/p-calendar&gt;&lt;/div&gt;
         &lt;/div&gt;
         &lt;div class="ui-grid-row"&gt;
             &lt;div class="ui-grid-col-4"&gt;&lt;label for="end"&gt;End&lt;/label&gt;&lt;/div&gt;
-            &lt;div class="ui-grid-col-8"&gt;&lt;p-calendar id="end" dateFormat="yy-mm-dd" [(value)]="event.end" defaultDate="2016-01-01" placeholder="Optional"&gt;&lt;/p-calendar&gt;&lt;/div&gt;
+            &lt;div class="ui-grid-col-8"&gt;&lt;p-calendar id="end" dateFormat="yy-mm-dd" [(ngModel)]="event.end" defaultDate="2016-01-01" placeholder="Optional"&gt;&lt;/p-calendar&gt;&lt;/div&gt;
         &lt;/div&gt;
         &lt;div class="ui-grid-row"&gt;
             &lt;div class="ui-grid-col-4"&gt;&lt;label for="allday"&gt;All Day&lt;/label&gt;&lt;/div&gt;
-            &lt;div class="ui-grid-col-8"&gt;&lt;p-toggleButton [(checked)]="event.allDay" style="width:150px" onLabel="Yes" offLabel="No"&gt;&lt;/p-toggleButton&gt;&lt;/div&gt;
+            &lt;div class="ui-grid-col-8"&gt;&lt;p-toggleButton [(ngModel)]="event.allDay" style="width:150px" onLabel="Yes" offLabel="No"&gt;&lt;/p-toggleButton&gt;&lt;/div&gt;
         &lt;/div&gt;
     &lt;/div&gt;
     &lt;footer&gt;

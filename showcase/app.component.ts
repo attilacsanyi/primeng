@@ -60,6 +60,7 @@ import {DataTableCrudDemo} from "./demo/datatable/datatablecruddemo";
 import {DataTableLazyDemo} from "./demo/datatable/datatablelazydemo";
 import {DataTableTemplatingDemo} from "./demo/datatable/datatabletemplatingdemo";
 import {DataTableCMDemo} from "./demo/datatable/datatablecmdemo";
+import {DataTableColTogglerDemo} from "./demo/datatable/datatablecoltogglerdemo";
 import {CodeHighlighterDemo} from "./demo/codehighlighter/codehighlighterdemo";
 import {OrderListDemo} from "./demo/orderlist/orderlistdemo";
 import {PickListDemo} from "./demo/picklist/picklistdemo";
@@ -81,6 +82,7 @@ import {ResponsiveDemo} from "./demo/responsive/responsivedemo";
 import {MultiSelectDemo} from "./demo/multiselect/multiselectdemo";
 import {GMapDemo} from "./demo/gmap/gmapdemo";
 import {ContextMenuDemo} from "./demo/contextmenu/contextmenudemo";
+import {DragDropDemo} from "./demo/dragdrop/dragdropdemo";
 
 @Component({
     selector: 'primeng-showcase',
@@ -148,6 +150,7 @@ import {ContextMenuDemo} from "./demo/contextmenu/contextmenudemo";
     {path: '/datatablecrud', name: 'DataTableCrudDemo', component: DataTableCrudDemo},
     {path: '/datatabletemplating', name: 'DataTableTemplatingDemo', component: DataTableTemplatingDemo},
     {path: '/datatablecontextmenu', name: 'DataTableCMDemo', component: DataTableCMDemo},
+    {path: '/datatablecoltoggler', name: 'DataTableColTogglerDemo', component: DataTableColTogglerDemo},
     {path: '/codehighlighter', name: 'CodeHighlighterDemo', component: CodeHighlighterDemo},
     {path: '/orderlist', name: 'OrderListDemo', component: OrderListDemo},
     {path: '/picklist', name: 'PickListDemo', component: PickListDemo},
@@ -168,7 +171,8 @@ import {ContextMenuDemo} from "./demo/contextmenu/contextmenudemo";
     {path: '/responsive', name: 'ResponsiveDemo', component: ResponsiveDemo},
     {path: '/multiselect', name: 'MultiSelectDemo', component: MultiSelectDemo},
     {path: '/gmap', name: 'GMapDemo', component: GMapDemo},
-    {path: '/contextmenu', name: 'ContextMenuDemo', component: ContextMenuDemo}
+    {path: '/contextmenu', name: 'ContextMenuDemo', component: ContextMenuDemo},
+    {path: '/dragdrop', name: 'DragDropDemo', component: DragDropDemo}
 ])
 export class AppComponent {
 
