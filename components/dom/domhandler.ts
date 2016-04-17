@@ -153,4 +153,12 @@ export class DomHandler {
         let doc = document.documentElement;
         return (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
     }
+    
+    public matches(element, selector: string): boolean {
+        var p = Element.prototype;
+    	var f = p.matches||p.webkitMatchesSelector||p['mozMatchesSelector']||p.msMatchesSelector||function(s) {
+    		return [].indexOf.call(document.querySelectorAll(s), this) !== -1;
+    	};
+    	return f.call(element, selector);
+    }
 }

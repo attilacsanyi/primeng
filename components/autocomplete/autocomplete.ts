@@ -295,8 +295,8 @@ export class AutoComplete implements AfterViewInit,DoCheck,AfterViewChecked,Cont
     
     removeItem(item: any) {
         let itemIndex = this.domHandler.index(item);
-        this.onUnselect.emit(this.suggestions[itemIndex]);
-        this.value.splice(itemIndex, 1);
+        let removedValue = this.value.splice(itemIndex, 1)[0];
+        this.onUnselect.emit(removedValue);
         this.onModelChange(this.value);
     }
     
@@ -327,7 +327,7 @@ export class AutoComplete implements AfterViewInit,DoCheck,AfterViewChecked,Cont
                 //down
                 case 40:
                     if(highlightedItem) {
-                        var nextItem = highlightedItem.nextSibling;
+                        var nextItem = highlightedItem.nextElementSibling;
                         if(nextItem) {
                             this.domHandler.removeClass(highlightedItem, 'ui-state-highlight');
                             this.domHandler.addClass(nextItem, 'ui-state-highlight');
