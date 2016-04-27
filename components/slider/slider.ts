@@ -12,7 +12,7 @@ const SLIDER_VALUE_ACCESSOR: Provider = CONST_EXPR(
 @Component({
     selector: 'p-slider',
     template: `
-        <div [attr.style]="style" [attr.class]="styleClass"></div>
+        <div [attr.style]="style" [class]="styleClass"></div>
     `,
     providers: [SLIDER_VALUE_ACCESSOR]
 })
@@ -63,7 +63,7 @@ export class Slider implements AfterViewInit,OnDestroy,OnChanges,ControlValueAcc
             values: this.value,
             slide: (event: Event, ui: any) => {
                 if(this.range) {
-                    this.onModelChange(ui.value);
+                    this.onModelChange(ui.values);
                     this.onChange.emit({originalEvent: event, values: ui.values});
                 }
                 else {

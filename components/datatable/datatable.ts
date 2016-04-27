@@ -1,6 +1,7 @@
-import {Component,ElementRef,AfterViewInit,AfterViewChecked,OnInit,OnDestroy,DoCheck,Input,Output,SimpleChange,EventEmitter,ContentChild,ContentChildren,Renderer,IterableDiffers,Query,QueryList} from 'angular2/core';
+import {Component,ElementRef,AfterViewInit,AfterViewChecked,OnInit,OnDestroy,DoCheck,Input,Output,SimpleChange,EventEmitter,ContentChild,ContentChildren,Renderer,IterableDiffers,Query,QueryList,TemplateRef} from 'angular2/core';
 import {Column} from '../column/column';
 import {ColumnTemplateLoader} from '../column/columntemplateloader';
+import {RowExpansionLoader} from './rowexpansionloader';
 import {Header} from '../common/header';
 import {Footer} from '../common/footer';
 import {Paginator} from '../paginator/paginator';
@@ -13,7 +14,7 @@ import {DomHandler} from '../dom/domhandler';
 @Component({
     selector: 'p-dataTable',
     template: `
-        <div [attr.style]="style" [attr.class]="styleClass" 
+        <div [attr.style]="style" [class]="styleClass" 
             [ngClass]="{'ui-datatable ui-widget': true, 'ui-datatable-reflow':responsive, 'ui-datatable-stacked': stacked}">
             <div class="ui-datatable-header ui-widget-header" *ngIf="header">
                 <ng-content select="header"></ng-content>
@@ -22,51 +23,60 @@ import {DomHandler} from '../dom/domhandler';
                 <table>
                     <thead>
                         <tr *ngIf="!headerRows" class="ui-state-default">
-                            <th #headerCell *ngFor="#col of columns" [attr.style]="col.style" [attr.class]="col.styleClass" [hidden]="col.hidden"
+                            <th #headerCell *ngFor="#col of columns" [attr.style]="col.style" [class]="col.styleClass" [style.display]="col.hidden ? 'none' : 'table-cell'"
                                 (click)="sort($event,col)" (mouseenter)="hoveredHeader = $event.target" (mouseleave)="hoveredHeader = null"
                                 [ngClass]="{'ui-state-default ui-unselectable-text':true, 'ui-state-hover': headerCell === hoveredHeader && col.sortable,'ui-sortable-column': col.sortable,'ui-state-active': isSorted(col)}">
                                 <span class="ui-column-title">{{col.header}}</span>
                                 <span class="ui-sortable-column-icon fa fa-fw fa-sort" *ngIf="col.sortable"
                                      [ngClass]="{'fa-sort-desc': (getSortOrder(col) == -1),'fa-sort-asc': (getSortOrder(col) == 1)}"></span>
-                                <input type="text" pInputText class="ui-column-filter" *ngIf="col.filter" (click)="onFilterInputClick($event)" (keyup)="onFilterKeyup($event.target.value, col.field, col.filterMatchMode)"/>
+                                <input type="text" pInputText class="ui-column-filter" *ngIf="col.filter" [value]="filters[col.field] ? filters[col.field].value : ''" (click)="onFilterInputClick($event)" (keyup)="onFilterKeyup($event.target.value, col.field, col.filterMatchMode)"/>
                             </th>
                         </tr>
                         <tr *ngFor="#headerRow of headerRows" class="ui-state-default">
-                            <th #headerCell *ngFor="#col of headerRow.columns" [attr.style]="col.style" [attr.class]="col.styleClass" [attr.colspan]="col.colspan" [attr.rowspan]="col.rowspan"
-                                (click)="sort($event,col)" (mouseenter)="hoveredHeader = $event.target" (mouseleave)="hoveredHeader = null" [hidden]="col.hidden"
+                            <th #headerCell *ngFor="#col of headerRow.columns" [attr.style]="col.style" [class]="col.styleClass" [attr.colspan]="col.colspan" [attr.rowspan]="col.rowspan"
+                                (click)="sort($event,col)" (mouseenter)="hoveredHeader = $event.target" (mouseleave)="hoveredHeader = null" [style.display]="col.hidden ? 'none' : 'table-cell'"
                                 [ngClass]="{'ui-state-default ui-unselectable-text':true, 'ui-state-hover': headerCell === hoveredHeader && col.sortable,'ui-sortable-column': col.sortable,'ui-state-active': isSorted(col)}">
                                 <span class="ui-column-title">{{col.header}}</span>
                                 <span class="ui-sortable-column-icon fa fa-fw fa-sort" *ngIf="col.sortable"
                                      [ngClass]="{'fa-sort-desc': (getSortOrder(col) == -1),'fa-sort-asc': (getSortOrder(col) == 1)}"></span>
-                                <input type="text" pInputText class="ui-column-filter" *ngIf="col.filter" (click)="onFilterInputClick($event)" (keyup)="onFilterKeyup($event.target.value, col.field, col.filterMatchMode)"/>
+                                <input type="text" pInputText class="ui-column-filter" *ngIf="col.filter" [value]="filters[col.field] ? filters[col.field].value : ''" (click)="onFilterInputClick($event)" (keyup)="onFilterKeyup($event.target.value, col.field, col.filterMatchMode)"/>
                             </th>
                         </tr>
                     </thead>
                     <tfoot *ngIf="hasFooter()">
                         <tr *ngIf="!footerRows">
-                            <th *ngFor="#col of columns" [attr.style]="col.style" [attr.class]="col.styleClass" [ngClass]="{'ui-state-default':true}" [hidden]="col.hidden">{{col.footer}}</th>
+                            <th *ngFor="#col of columns" [attr.style]="col.style" [class]="col.styleClass" [ngClass]="{'ui-state-default':true}" [style.display]="col.hidden ? 'none' : 'table-cell'">{{col.footer}}</th>
                         </tr>
                         <tr *ngFor="#footerRow of footerRows">
-                            <th *ngFor="#col of footerRow.columns" [attr.style]="col.style" [attr.class]="col.styleClass"
-                                [attr.colspan]="col.colspan" [attr.rowspan]="col.rowspan" [hidden]="col.hidden"
+                            <th *ngFor="#col of footerRow.columns" [attr.style]="col.style" [class]="col.styleClass"
+                                [attr.colspan]="col.colspan" [attr.rowspan]="col.rowspan" [style.display]="col.hidden ? 'none' : 'table-cell'"
                                 [ngClass]="{'ui-state-default':true}">{{col.footer}}</th>
                         </tr>
                     </tfoot>
                     <tbody class="ui-datatable-data ui-widget-content">
-                        <tr #rowElement *ngFor="#rowData of dataToRender;#even = even; #odd = odd;" class="ui-widget-content" (mouseenter)="hoveredRow = $event.target" (mouseleave)="hoveredRow = null"
-                                (click)="onRowClick($event, rowData)" (dblclick)="rowDblclick($event,rowData)" (contextmenu)="onRowRightClick($event,rowData)"
-                                [ngClass]="{'ui-datatable-even':even,'ui-datatable-odd':odd,'ui-state-hover': (selectionMode && rowElement == hoveredRow), 'ui-state-highlight': isSelected(rowData)}">
-                            <td *ngFor="#col of columns" [attr.style]="col.style" [attr.class]="col.styleClass" [hidden]="col.hidden"
-                                [ngClass]="{'ui-editable-column':col.editable}" (click)="switchCellToEditMode($event.target,col,rowData)">
-                                <span class="ui-column-title" *ngIf="responsive">{{col.header}}</span>
-                                <span class="ui-cell-data" *ngIf="!col.template">{{resolveFieldData(rowData,col.field)}}</span>
-                                <span class="ui-cell-data" *ngIf="col.template">
-                                    <p-columnTemplateLoader [column]="col" [rowData]="rowData"></p-columnTemplateLoader>
-                                </span>
-                                <input type="text" class="ui-cell-editor ui-state-highlight" *ngIf="col.editable" [(ngModel)]="rowData[col.field]"
-                                        (blur)="switchCellToViewMode($event.target,col,rowData,true)" (keydown)="onCellEditorKeydown($event, col, rowData)"/>
-                            </td>
-                        </tr>
+                        <template ngFor #rowData [ngForOf]="dataToRender" #even="even" #odd="odd" #rowIndex="index">
+                            <tr #rowElement class="ui-widget-content" (mouseenter)="hoveredRow = $event.target" (mouseleave)="hoveredRow = null"
+                                    (click)="handleRowClick($event, rowData)" (dblclick)="rowDblclick($event,rowData)" (contextmenu)="onRowRightClick($event,rowData)"
+                                    [ngClass]="{'ui-datatable-even':even,'ui-datatable-odd':odd,'ui-state-hover': (selectionMode && rowElement == hoveredRow), 'ui-state-highlight': isSelected(rowData)}">
+                                <td *ngFor="#col of columns" [attr.style]="col.style" [class]="col.styleClass" [style.display]="col.hidden ? 'none' : 'table-cell'"
+                                    [ngClass]="{'ui-editable-column':col.editable}" (click)="switchCellToEditMode($event.target,col,rowData)">
+                                    <span class="ui-column-title" *ngIf="responsive">{{col.header}}</span>
+                                    <span class="ui-cell-data" *ngIf="!col.template">{{resolveFieldData(rowData,col.field)}}</span>
+                                    <span class="ui-cell-data" *ngIf="col.template">
+                                        <p-columnTemplateLoader [column]="col" [rowData]="rowData" [rowIndex]="rowIndex + first"></p-columnTemplateLoader>
+                                    </span>
+                                    <input type="text" class="ui-cell-editor ui-state-highlight" *ngIf="col.editable" [(ngModel)]="rowData[col.field]"
+                                            (blur)="switchCellToViewMode($event.target,col,rowData,true)" (keydown)="onCellEditorKeydown($event, col, rowData)"/>
+                                    <div class="ui-row-toggler fa fa-fw ui-c" [ngClass]="{'fa-chevron-circle-down':isRowExpanded(rowData), 'fa-chevron-circle-right': !isRowExpanded(rowData)}"
+                                        *ngIf="col.expander" (click)="toggleRow(rowData)"></div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="expandableRows && isRowExpanded(rowData)">
+                                <td [attr.colspan]="columns.length">
+                                    <p-rowExpansionLoader [rowData]="rowData" [template]="rowExpansionTemplate"></p-rowExpansionLoader>
+                                </td>
+                            </tr>
+                        </template>
                     </tbody>
                 </table>
             </div>
@@ -75,7 +85,7 @@ import {DomHandler} from '../dom/domhandler';
                     <table>
                         <thead>
                             <tr>
-                                <th #headerCell *ngFor="#col of columns" [attr.style]="col.style" [attr.class]="col.styleClass" [hidden]="col.hidden"
+                                <th #headerCell *ngFor="#col of columns" [attr.style]="col.style" [class]="col.styleClass" [style.display]="col.hidden ? 'none' : 'table-cell'"
                                     (click)="sort($event,col)" (mouseenter)="hoveredHeader = $event.target" (mouseleave)="hoveredHeader = null"
                                     [ngClass]="{'ui-state-default ui-unselectable-text':true, 'ui-state-hover': headerCell === hoveredHeader && col.sortable,'ui-sortable-column': col.sortable,'ui-state-active': col.field === sortField}">
                                     <span class="ui-column-title">{{col.header}}</span>
@@ -92,9 +102,9 @@ import {DomHandler} from '../dom/domhandler';
                 <table>
                     <tbody class="ui-datatable-data ui-widget-content">
                         <tr #rowElement *ngFor="#rowData of dataToRender;#even = even; #odd = odd;" class="ui-widget-content" (mouseenter)="hoveredRow = $event.target" (mouseleave)="hoveredRow = null"
-                                (click)="onRowClick($event, rowData)" (dblclick)="rowDblclick($event,rowData)"
+                                (click)="handleRowClick($event, rowData)" (dblclick)="rowDblclick($event,rowData)"
                                 [ngClass]="{'ui-datatable-even':even,'ui-datatable-odd':odd,'ui-state-hover': (selectionMode && rowElement == hoveredRow), 'ui-state-highlight': isSelected(rowData)}">
-                            <td *ngFor="#col of columns" [attr.style]="col.style" [attr.class]="col.styleClass" [hidden]="col.hidden"
+                            <td *ngFor="#col of columns" [attr.style]="col.style" [class]="col.styleClass" [style.display]="col.hidden ? 'none' : 'table-cell'"
                                 [ngClass]="{'ui-editable-column':col.editable}" (click)="switchCellToEditMode($event.target,col,rowData)">
                                 <span class="ui-column-title" *ngIf="responsive">{{col.header}}</span>
                                 <span class="ui-cell-data" *ngIf="!col.template">{{resolveFieldData(rowData,col.field)}}</span>
@@ -115,7 +125,7 @@ import {DomHandler} from '../dom/domhandler';
             </div>
         </div>
     `,
-    directives: [Paginator,InputText,ColumnTemplateLoader],
+    directives: [Paginator,InputText,ColumnTemplateLoader,RowExpansionLoader],
     providers: [DomHandler]
 })
 export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck {
@@ -143,6 +153,8 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
     @Output() selectionChange: EventEmitter<any> = new EventEmitter();
 
     @Input() editable: boolean;
+    
+    @Output() onRowClick: EventEmitter<any> = new EventEmitter();
 
     @Output() onRowSelect: EventEmitter<any> = new EventEmitter();
 
@@ -193,7 +205,7 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
     @Input() multiSortMeta: SortMeta[];
     
     @Input() contextMenu: any;
-
+    
     @Output() onEditInit: EventEmitter<any> = new EventEmitter();
 
     @Output() onEditComplete: EventEmitter<any> = new EventEmitter();
@@ -201,10 +213,20 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
     @Output() onEdit: EventEmitter<any> = new EventEmitter();
 
     @Output() onEditCancel: EventEmitter<any> = new EventEmitter();
+    
+    @Output() onPage: EventEmitter<any> = new EventEmitter();
+        
+    @Output() onSort: EventEmitter<any> = new EventEmitter();
+            
+    @Output() onFilter: EventEmitter<any> = new EventEmitter();
 
     @ContentChild(Header) header;
 
     @ContentChild(Footer) footer;
+    
+    @Input() expandableRows: boolean;
+    
+    rowExpansionTemplate: TemplateRef;
 
     private dataToRender: any[];
 
@@ -221,10 +243,12 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
     private columns: Column[];
 
     private columnsUpdated: boolean = false;
-
-    private sortedByDefault: boolean;
+    
+    private sortByDefault: boolean;
     
     private sortColumn: Column;
+    
+    private expandedRows: any[];
 
     differ: any;
 
@@ -232,11 +256,16 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
 
     preventBlurOnEdit: boolean;
 
-    constructor(private el: ElementRef, private domHandler: DomHandler, differs: IterableDiffers, @Query(Column) cols: QueryList<Column>,private renderer: Renderer) {
+    constructor(private el: ElementRef, private domHandler: DomHandler, differs: IterableDiffers, 
+        @Query(Column) cols: QueryList<Column>, @Query(TemplateRef) rowExpansionTmpl: QueryList<TemplateRef>, private renderer: Renderer) {
         this.differ = differs.find([]).create(null);
         cols.changes.subscribe(_ => {
             this.columns = cols.toArray();
             this.columnsUpdated = true;
+        });
+        
+        rowExpansionTmpl.changes.subscribe(_ => {
+            this.rowExpansionTemplate = rowExpansionTmpl.first
         });
     }
 
@@ -250,6 +279,9 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
                 filters: null,
                 multiSortMeta: this.multiSortMeta
             });
+        }
+        else if(this.sortField||this.multiSortMeta) {
+            this.sortByDefault = true;
         }
     }
 
@@ -289,11 +321,15 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
             if(this.paginator) {
                 this.updatePaginator();
             }
-            this.updateDataToRender(this.value);
+            this.updateDataToRender(this.filteredValue||this.value);
 
-            if(!this.lazy && !this.sortedByDefault && (this.sortField || this.multiSortMeta)) {
-                this.sortByDefault();
-                this.sortedByDefault = true;
+            if(!this.lazy && this.sortByDefault) {
+                this.sortByDefault = false;
+                
+                if(this.sortMode == 'single')
+                    this.sortSingle();
+                else if(this.sortMode == 'multiple')
+                    this.sortMultiple();
             }
         }
     }
@@ -317,13 +353,6 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
         }
     }
 
-    sortByDefault() {
-        if(this.sortMode == 'single')
-            this.sortSingle();
-        else if(this.sortMode == 'multiple')
-            this.sortMultiple();
-    }
-
     updatePaginator() {
         //total records
         this.totalRecords = this.lazy ? this.totalRecords : (this.value ? this.value.length: 0);
@@ -339,12 +368,15 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
         this.first = event.first;
         this.rows = event.rows;
 
-        if(this.lazy) {
+        if(this.lazy)
             this.onLazyLoad.emit(this.createLazyLoadMetadata());
-        }
-        else {
+        else
             this.updateDataToRender(this.filteredValue||this.value);
-        }
+        
+        this.onPage.emit({
+            first: this.first,
+            rows: this.rows
+        });
     }
 
     updateDataToRender(datasource) {
@@ -390,11 +422,17 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
                 this.sortSingle();
             }
         }
+        
+        this.onSort.emit({
+            field: this.sortField,
+            order: this.sortOrder,
+            multisortmeta: this.multiSortMeta
+        });
     }
 
     sortSingle() {
         if(this.value) {
-            if(this.sortColumn.sortable === 'custom') {
+            if(this.sortColumn && this.sortColumn.sortable === 'custom') {
                 this.sortColumn.sortFunction.emit({
                     field: this.sortField,
                     order: this.sortOrder
@@ -415,13 +453,11 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
                 });
             }
             
-
             this.first = 0;
 
-            if(this.hasFilter())
+            if(this.hasFilter()) {
                 this.filter();
-            else
-                this.updateDataToRender(this.filteredValue||this.value);
+            }
         }
     }
 
@@ -431,12 +467,10 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
                 return this.multisortField(data1, data2, this.multiSortMeta, 0);
             });
 
-            if(this.hasFilter())
+            if(this.hasFilter()) {
                 this.filter();
-            else
-                this.updateDataToRender(this.filteredValue||this.value);
+            }
         }
-
     }
 
     multisortField(data1,data2,multiSortMeta,index) {
@@ -513,7 +547,9 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
         return order;
     }
 
-    onRowClick(event, rowData) {
+    handleRowClick(event, rowData) {
+        this.onRowClick.next({originalEvent: event, data: rowData});
+        
         if(!this.selectionMode) {
             return;
         }
@@ -655,9 +691,8 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
                     }
 
                     //global
-                    if(this.globalFilter && !globalMatch && col.filter) {
-                        globalMatch = this.filterConstraints['contains'](this.value[i][col.field], this.globalFilter.value);
-
+                    if(this.globalFilter && !globalMatch) {
+                        globalMatch = this.filterConstraints['contains'](this.resolveFieldData(this.value[i], col.field), this.globalFilter.value);
                     }
                 }
 
@@ -681,6 +716,10 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
 
             this.updateDataToRender(this.filteredValue||this.value);
         }
+        
+        this.onFilter.emit({
+            filters: this.filters
+        });
     }
 
     hasFilter() {
@@ -863,6 +902,54 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
             filters: this.filters,
             multiSortMeta: this.multiSortMeta
         };
+    }
+    
+    toggleRow(row: any) {
+        if(!this.expandedRows) {
+            this.expandedRows = [];
+        }
+        
+        let expandedRowIndex = this.findExpandedRowIndex(row);
+        
+        if(expandedRowIndex != -1)
+            this.expandedRows.splice(expandedRowIndex, 1);
+        else
+            this.expandedRows.push(row);
+    }
+    
+    findExpandedRowIndex(row: any): number {
+        let index = -1
+        if(this.expandedRows) {
+            for(let i = 0; i < this.expandedRows.length; i++) {
+                if(this.expandedRows[i] == row) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        return index;
+    }
+    
+    isRowExpanded(row) {
+        return this.findExpandedRowIndex(row) != -1;
+    }
+    
+    public reset() {
+        this.sortField = null;
+        this.sortOrder = null;
+        
+        this.filteredValue = null;
+        this.filters = {};
+
+        if(this.paginator) {
+            this.paginate({
+                first: 0,
+                rows: this.rows
+            });
+        }
+        else {
+            this.updateDataToRender(this.value);
+        }
     }
 
     ngOnDestroy() {

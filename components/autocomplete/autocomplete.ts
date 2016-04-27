@@ -5,8 +5,6 @@ import {DomHandler} from '../dom/domhandler';
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from 'angular2/common';
 import {CONST_EXPR} from 'angular2/src/facade/lang';
 
-declare var PUI: any;
-
 const AUTOCOMPLETE_VALUE_ACCESSOR: Provider = CONST_EXPR(
     new Provider(NG_VALUE_ACCESSOR, {
         useExisting: forwardRef(() => AutoComplete),
@@ -17,14 +15,14 @@ const AUTOCOMPLETE_VALUE_ACCESSOR: Provider = CONST_EXPR(
 @Component({
     selector: 'p-autoComplete',
     template: `
-        <span [ngClass]="{'ui-autocomplete ui-widget':true,'ui-autocomplete-dd':dropdown}" [attr.style]="style" [attr.styleClass]="styleClass">
-            <input *ngIf="!multiple" #in pInputText type="text" [attr.style]="inputStyle" [attr.styleClass]="inputStyleClass" 
+        <span [ngClass]="{'ui-autocomplete ui-widget':true,'ui-autocomplete-dd':dropdown}" [attr.style]="style" [class]="styleClass">
+            <input *ngIf="!multiple" #in pInputText type="text" [attr.style]="inputStyle" [class]="inputStyleClass" 
             [value]="value ? (field ? resolveFieldData(value)||value : value) : null" (input)="onInput($event)" (keydown)="onKeydown($event)" (blur)="onModelTouched()"
             [attr.placeholder]="placeholder" [attr.size]="size" [attr.maxlength]="maxlength" [attr.readonly]="readonly" [disabled]="disabled" 
             ><ul *ngIf="multiple" class="ui-autocomplete-multiple ui-widget ui-inputtext ui-state-default ui-corner-all" (click)="multiIn.focus()">
                 <li #token *ngFor="#val of value" class="ui-autocomplete-token ui-state-highlight ui-corner-all">
                     <span class="ui-autocomplete-token-icon fa fa-fw fa-close" (click)="removeItem(token)"></span>
-                    <span class="ui-autocomplete-token-label">{{val[field]}}</span>
+                    <span class="ui-autocomplete-token-label">{{field ? val[field] : val}}</span>
                 </li>
                 <li class="ui-autocomplete-input-token">
                     <input #multiIn type="text" pInputText (input)="onInput($event)" (keydown)="onKeydown($event)" (blur)="onModelTouched()">
@@ -120,7 +118,7 @@ export class AutoComplete implements AfterViewInit,DoCheck,AfterViewChecked,Cont
     ngDoCheck() {
         let changes = this.differ.diff(this.suggestions);
 
-        if(changes) {
+        if(changes && this.panel) {
             if(this.suggestions && this.suggestions.length) {
                 this.show();
                 this.suggestionsUpdated = true;
@@ -270,7 +268,7 @@ export class AutoComplete implements AfterViewInit,DoCheck,AfterViewChecked,Cont
     show() {
         if(!this.panelVisible) {
             this.panelVisible = true;
-            this.panel.style.zIndex = ++PUI.zindex;
+            this.panel.style.zIndex = ++DomHandler.zindex;
             this.domHandler.fadeIn(this.panel, 200);
         }        
     }
@@ -358,8 +356,10 @@ export class AutoComplete implements AfterViewInit,DoCheck,AfterViewChecked,Cont
                 
                 //enter
                 case 13:
-                    this.selectItem(highlightedItem);
-                    this.hide();
+                    if(highlightedItem) {
+                        this.selectItem(highlightedItem);
+                        this.hide();
+                    }
                     event.preventDefault();
                 break;
                 

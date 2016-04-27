@@ -4,8 +4,6 @@ import {DomHandler} from '../dom/domhandler';
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from 'angular2/common';
 import {CONST_EXPR} from 'angular2/src/facade/lang';
 
-declare var PUI: any;
-
 const DROPDOWN_VALUE_ACCESSOR: Provider = CONST_EXPR(
     new Provider(NG_VALUE_ACCESSOR, {
         useExisting: forwardRef(() => Dropdown),
@@ -17,16 +15,16 @@ const DROPDOWN_VALUE_ACCESSOR: Provider = CONST_EXPR(
     selector: 'p-dropdown',
     template: `
         <div [ngClass]="{'ui-dropdown ui-widget ui-state-default ui-corner-all ui-helper-clearfix':true,'ui-state-hover':hover&&!disabled,'ui-state-focus':focus,'ui-state-disabled':disabled}" 
-            (mouseenter)="onMouseenter($event)" (mouseleave)="onMouseleave($event)" (click)="onMouseclick($event,in)" [attr.style]="style" [attr.styleClass]="styleClass">
+            (mouseenter)="onMouseenter($event)" (mouseleave)="onMouseleave($event)" (click)="onMouseclick($event,in)" [attr.style]="style" [class]="styleClass">
             <div class="ui-helper-hidden-accessible">
-                <select>
-                    <option *ngFor="#option of options" [value]="option.value">{{option.label}}</option>
+                <select [required]="required">
+                    <option *ngFor="#option of options" [value]="option.value" [selected]="value == option.value">{{option.label}}</option>
                 </select>
             </div>
             <div class="ui-helper-hidden-accessible">
                 <input #in type="text" readonly (focus)="onFocus($event)" (blur)="onBlur($event)" (keydown)="onKeydown($event)">
             </div>
-            <label class="ui-dropdown-label ui-inputtext ui-corner-all">{{label}}</label>
+            <label class="ui-dropdown-label ui-inputtext ui-corner-all" [innerHTML]="label"></label>
             <div class="ui-dropdown-trigger ui-state-default ui-corner-right" [ngClass]="{'ui-state-hover':hover&&!disabled,'ui-state-focus':focus}">
                 <span class="fa fa-fw fa-caret-down"></span>
             </div>
@@ -69,6 +67,8 @@ export class Dropdown implements OnInit,AfterViewInit,AfterViewChecked,DoCheck,O
     @Input() disabled: boolean;
     
     @Input() autoWidth: boolean = true;
+    
+    @Input() required: boolean;
     
     @ContentChild(TemplateRef) itemTemplate: TemplateRef;
 
@@ -151,14 +151,14 @@ export class Dropdown implements OnInit,AfterViewInit,AfterViewChecked,DoCheck,O
             this.optionsChanged = false;
         }
     }
-        
+    
     writeValue(value: any) : void {
         this.value = value;
         this.updateLabel();
-        
-        if(this.initialized) {
+
+        if(this.initialized && !this.optionsChanged) {
             this.highlightValue();
-        }    
+        }
     }
     
     registerOnChange(fn: Function): void {
@@ -170,7 +170,7 @@ export class Dropdown implements OnInit,AfterViewInit,AfterViewChecked,DoCheck,O
     }
     
     updateLabel() {
-        if(this.optionsToDisplay) {
+        if(this.optionsToDisplay && this.optionsToDisplay.length) {
             let selectedIndex = this.findItemIndex(this.value, this.optionsToDisplay);
             if(selectedIndex == -1)
                 this.label = this.optionsToDisplay[0].label;
@@ -190,7 +190,7 @@ export class Dropdown implements OnInit,AfterViewInit,AfterViewChecked,DoCheck,O
             this.domHandler.removeClass(currentSelectedItem, 'ui-state-highlight');
         }
         
-        if(this.optionsToDisplay) {
+        if(this.optionsToDisplay && this.optionsToDisplay.length) {
             let selectedIndex = this.findItemIndex(this.value, this.optionsToDisplay);
             if(selectedIndex == -1 && fallbackToFirst) {
                 selectedIndex = 0;
@@ -236,10 +236,12 @@ export class Dropdown implements OnInit,AfterViewInit,AfterViewChecked,DoCheck,O
     }
     
     show(panel,container) {
-        this.panelVisible = true;
-        panel.style.zIndex = ++PUI.zindex;
-        this.domHandler.relativePosition(panel, container);
-        this.domHandler.fadeIn(panel,250);
+        if(this.optionsToDisplay && this.optionsToDisplay.length) {
+            this.panelVisible = true;
+            panel.style.zIndex = ++DomHandler.zindex;
+            this.domHandler.relativePosition(panel, container);
+            this.domHandler.fadeIn(panel,250);
+        }
     }
     
     hide() {
