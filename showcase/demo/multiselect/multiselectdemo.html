@@ -1,13 +1,13 @@
 <div class="ContentSideSections">
-    <div class="Content100 overHidden TextShadow">
-        <span class="fontSize30 TextShadow orange mediumFont marginBottom20 dispBlock">MultiSelect</span>
-        <span class="defaultText dispTable">MultiSelect is used to select multiple items from a collection.</span>
+    <div>
+        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">MultiSelect</span>
+        <span class="defaultText">MultiSelect is used to select multiple items from a collection.</span>
     </div>
 </div>
 
 <div class="ContentSideSections Implementation">
     <p-multiSelect [options]="cars" [(ngModel)]="selectedCars"></p-multiSelect>
-    <p>Selected Cars: <span *ngFor="#c of selectedCars">{{c}} &nbsp;</span></p>
+    <p>Selected Cars: <span ngFor="let c of selectedCars">{{c}} &nbsp;</span></p>
 </div>
 
 <div class="ContentSideSections Source">
@@ -196,7 +196,7 @@ export class MyModel {
 <code class="language-markup" pCode ngNonBindable>
 &lt;p-multiSelect [options]="cars" [(ngModel)]="selectedCars"&gt;&lt;/p-multiSelect&gt;
 
-&lt;p&gt;Selected Cars: &lt;span *ngFor="#c of selectedCars"&gt;{{c}} &nbsp;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Selected Cars: &lt;span ngFor="let c of selectedCars"&gt;{{c}} &nbsp;&lt;/span&gt;&lt;/p&gt;
 </code>
 </pre>
 
