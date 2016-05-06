@@ -1,16 +1,13 @@
-import {Component,ElementRef,AfterViewInit,AfterViewChecked,DoCheck,Input,Output,EventEmitter,ContentChild,TemplateRef,IterableDiffers,Renderer,forwardRef,Provider} from 'angular2/core';
+import {Component,ElementRef,AfterViewInit,AfterViewChecked,DoCheck,Input,Output,EventEmitter,ContentChild,TemplateRef,IterableDiffers,Renderer,forwardRef,Provider} from '@angular/core';
 import {InputText} from '../inputtext/inputtext';
 import {Button} from '../button/button';
 import {DomHandler} from '../dom/domhandler';
-import {NG_VALUE_ACCESSOR, ControlValueAccessor} from 'angular2/common';
-import {CONST_EXPR} from 'angular2/src/facade/lang';
+import {NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/common';
 
-const AUTOCOMPLETE_VALUE_ACCESSOR: Provider = CONST_EXPR(
-    new Provider(NG_VALUE_ACCESSOR, {
-        useExisting: forwardRef(() => AutoComplete),
-        multi: true
-    })
-);
+const AUTOCOMPLETE_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
+    useExisting: forwardRef(() => AutoComplete),
+    multi: true
+});
 
 @Component({
     selector: 'p-autoComplete',
@@ -87,7 +84,7 @@ export class AutoComplete implements AfterViewInit,DoCheck,AfterViewChecked,Cont
     
     @Input() multiple: boolean;
     
-    @ContentChild(TemplateRef) itemTemplate: TemplateRef;
+    @ContentChild(TemplateRef) itemTemplate: TemplateRef<any>;
     
     value: any;
     
@@ -238,8 +235,10 @@ export class AutoComplete implements AfterViewInit,DoCheck,AfterViewChecked,Cont
         if(this.multiple) {
             this.input.value = '';
             this.value = this.value||[];
-            this.value.push(selectedValue);
-            this.onModelChange(this.value);
+            if(!this.isSelected(selectedValue)) {
+                this.value.push(selectedValue);
+                this.onModelChange(this.value);
+            }
         }
         else {
             this.input.value = this.field ? this.resolveFieldData(selectedValue): selectedValue;
@@ -363,19 +362,48 @@ export class AutoComplete implements AfterViewInit,DoCheck,AfterViewChecked,Cont
                     event.preventDefault();
                 break;
                 
-                //enter
+                //escape
                 case 27:
                     this.hide();
                     event.preventDefault();
                 break;
+
                 
                 //tab
                 case 9:
-                    this.selectItem(highlightedItem);
+                    if(highlightedItem) {
+                        this.selectItem(highlightedItem);
+                    }
                     this.hide();
                 break;
             }
         }
+        
+        if(this.multiple) {
+            switch(event.which) {
+                //backspace
+                case 8:
+                    if(this.value && this.value.length && !this.input.value) {
+                        let removedValue = this.value.pop();
+                        this.onUnselect.emit(removedValue);
+                        this.onModelChange(this.value);
+                    }
+                break;
+            }
+        }
+    }
+    
+    isSelected(val: any): boolean {
+        let selected: boolean = false;
+        if(this.value && this.value.length) {
+            for(let i = 0; i < this.value.length; i++) {
+                if(this.domHandler.equals(this.value[i], val)) {
+                    selected = true;
+                    break;
+                }
+            }
+        }
+        return selected;
     }
     
     ngOnDestroy() {

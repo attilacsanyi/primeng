@@ -8,28 +8,23 @@ import {TabView} from '../../../components/tabview/tabview';
 import {TabPanel} from '../../../components/tabview/tabpanel';
 import {Car} from '../domain/car';
 import {Column} from '../../../components/column/column';
-import {Header} from '../../../components/common/header';
 import {DataTableSubmenu} from './datatablesubmenu.component';
 import {CarService} from '../service/carservice';
+import {Header} from '../../../components/common/header';
 
 @Component({
-    templateUrl: 'showcase/demo/datatable/datatableresponsivedemo.html',
-    directives: [DataTable,Column,Header,Button,DataTableSubmenu,TabPanel,TabView,CodeHighlighter,ROUTER_DIRECTIVES],
+    templateUrl: 'showcase/demo/datatable/datatableexportdemo.html',
+    directives: [DataTable,Column,DataTableSubmenu,TabPanel,TabView,CodeHighlighter,Header,Button,ROUTER_DIRECTIVES],
     providers: [HTTP_PROVIDERS,CarService]
 })
-export class DataTableResponsiveDemo implements OnInit {
+export class DataTableExportDemo implements OnInit {
 
     cars: Car[];
-    
-    stacked: boolean;
 
     constructor(private carService: CarService) { }
 
     ngOnInit() {
-        this.carService.getCarsMedium().then(cars => this.cars = cars);
+        this.carService.getCarsSmall().then(cars => this.cars = cars);
     }
-    
-    toggle() {
-        this.stacked = !this.stacked;
-    }
+
 }

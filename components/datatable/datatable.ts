@@ -1,4 +1,4 @@
-import {Component,ElementRef,AfterViewInit,AfterViewChecked,OnInit,OnDestroy,DoCheck,Input,Output,SimpleChange,EventEmitter,ContentChild,ContentChildren,Renderer,IterableDiffers,Query,QueryList,TemplateRef} from 'angular2/core';
+import {Component,ElementRef,AfterViewInit,AfterViewChecked,OnInit,OnDestroy,DoCheck,Input,Output,SimpleChange,EventEmitter,ContentChild,ContentChildren,Renderer,IterableDiffers,Query,QueryList,TemplateRef} from '@angular/core';
 import {Column} from '../column/column';
 import {ColumnTemplateLoader} from '../column/columntemplateloader';
 import {RowExpansionLoader} from './rowexpansionloader';
@@ -209,11 +209,13 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
 
     @Input() sortField: string;
 
-    @Input() sortOrder: number;
+    @Input() sortOrder: number = 1;
 
     @Input() multiSortMeta: SortMeta[];
     
     @Input() contextMenu: any;
+    
+    @Input() csvSeparator: string = ',';
     
     @Output() onEditInit: EventEmitter<any> = new EventEmitter();
 
@@ -235,8 +237,8 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
     
     @Input() expandableRows: boolean;
     
-    rowExpansionTemplate: TemplateRef;
-
+    @ContentChild(TemplateRef) rowExpansionTemplate: TemplateRef<any>;
+    
     private dataToRender: any[];
 
     private first: number = 0;
@@ -253,7 +255,7 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
 
     private columnsUpdated: boolean = false;
     
-    private sortByDefault: boolean;
+    private stopSortPropagation: boolean;
     
     private sortColumn: Column;
     
@@ -266,15 +268,11 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
     preventBlurOnEdit: boolean;
 
     constructor(private el: ElementRef, private domHandler: DomHandler, differs: IterableDiffers, 
-        @Query(Column) cols: QueryList<Column>, @Query(TemplateRef) rowExpansionTmpl: QueryList<TemplateRef>, private renderer: Renderer) {
+        @Query(Column) cols: QueryList<Column>, private renderer: Renderer) {
         this.differ = differs.find([]).create(null);
         cols.changes.subscribe(_ => {
             this.columns = cols.toArray();
             this.columnsUpdated = true;
-        });
-        
-        rowExpansionTmpl.changes.subscribe(_ => {
-            this.rowExpansionTemplate = rowExpansionTmpl.first
         });
     }
 
@@ -288,9 +286,6 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
                 filters: null,
                 multiSortMeta: this.multiSortMeta
             });
-        }
-        else if(this.sortField||this.multiSortMeta) {
-            this.sortByDefault = true;
         }
     }
 
@@ -330,16 +325,17 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
             if(this.paginator) {
                 this.updatePaginator();
             }
-            this.updateDataToRender(this.filteredValue||this.value);
 
-            if(!this.lazy && this.sortByDefault) {
-                this.sortByDefault = false;
-                
+            if(!this.lazy && !this.stopSortPropagation && (this.sortField||this.multiSortMeta)) {                
                 if(this.sortMode == 'single')
                     this.sortSingle();
                 else if(this.sortMode == 'multiple')
                     this.sortMultiple();
             }
+            
+            this.updateDataToRender(this.filteredValue||this.value);
+            
+            this.stopSortPropagation = false;
         }
     }
 
@@ -468,6 +464,9 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
                 this.filter();
             }
         }
+        
+        //prevent resort at ngDoCheck
+        this.stopSortPropagation = true;
     }
 
     sortMultiple() {
@@ -480,6 +479,9 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
                 this.filter();
             }
         }
+        
+        //prevent resort at ngDoCheck
+        this.stopSortPropagation = true;
     }
 
     multisortField(data1,data2,multiSortMeta,index) {
@@ -951,7 +953,7 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
     
     public reset() {
         this.sortField = null;
-        this.sortOrder = null;
+        this.sortOrder = 1;
         
         this.filteredValue = null;
         this.filters = {};
@@ -965,6 +967,38 @@ export class DataTable implements AfterViewChecked,AfterViewInit,OnInit,DoCheck 
         else {
             this.updateDataToRender(this.value);
         }
+    }
+    
+    public exportCSV() {
+        let data = this.value,
+        csv = "data:text/csv;charset=utf-8,";
+        
+        //headers
+        for(let i = 0; i < this.columns.length; i++) {
+            if(this.columns[i].field) {
+                csv += this.columns[i].field;
+                
+                if(i < (this.columns.length - 1)) {
+                    csv += this.csvSeparator;
+                }
+            }
+        }
+        
+        //body        
+        this.value.forEach((record, i) => {
+            csv += '\n';
+            for(let i = 0; i < this.columns.length; i++) {
+                if(this.columns[i].field) {
+                    csv += this.resolveFieldData(record, this.columns[i].field);
+                    
+                    if(i < (this.columns.length - 1)) {
+                        csv += this.csvSeparator;
+                    }
+                }
+            }
+        });
+        
+        window.open(encodeURI(csv));
     }
 
     ngOnDestroy() {

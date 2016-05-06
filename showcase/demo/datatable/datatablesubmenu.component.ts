@@ -1,5 +1,5 @@
-import {Component} from 'angular2/core';
-import {ROUTER_DIRECTIVES} from 'angular2/router';
+import {Component} from '@angular/core';
+import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 
 @Component({
     selector: 'datatable-demos',
@@ -24,6 +24,7 @@ import {ROUTER_DIRECTIVES} from 'angular2/router';
                 <li><a [routerLink]="['DataTableColTogglerDemo']">&#9679; ColToggler</a></li>
                 <li><a [routerLink]="['DataTableResponsiveDemo']">&#9679; Responsive</a></li>
                 <li><a [routerLink]="['DataTableCrudDemo']">&#9679; Crud</a></li>
+                <li><a [routerLink]="['DataTableExportDemo']">&#9679; Export</a></li>
             </ul>
         </div>
     `,

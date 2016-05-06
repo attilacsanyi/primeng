@@ -1,5 +1,5 @@
-import {Component} from 'angular2/core';
-import {FORM_DIRECTIVES,Validators, FormBuilder,Control,ControlGroup} from 'angular2/common';
+import {Component} from '@angular/core';
+import {FORM_DIRECTIVES,Validators, FormBuilder,Control,ControlGroup} from '@angular/common';
 import {InputText} from '../../../components/inputtext/inputtext';
 import {Password} from '../../../components/password/password';
 import {Panel} from '../../../components/panel/panel';
@@ -39,7 +39,6 @@ export class ValidationDemo {
     
     onSubmit(value: string) {
         this.submitted = true;
-        console.log(value);
     }
     
 }

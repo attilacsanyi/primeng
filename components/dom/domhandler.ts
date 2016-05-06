@@ -1,4 +1,4 @@
-import {Injectable} from 'angular2/core';
+import {Injectable} from '@angular/core';
 
 @Injectable()
 export class DomHandler {
@@ -67,18 +67,24 @@ export class DomHandler {
     }
 
     public relativePosition(element: any, target: any):void {
-        let elementOuterHeight = element.offsetParent ? element.offsetHeight : this.getHiddenElementOuterHeight(element);
+        let elementDimensions = element.offsetParent ? {width: element.outerWidth, height: element.outerHeight} : this.getHiddenElementDimensions(element);
         let targetHeight = target.offsetHeight;
+        let targetWidth = target.offsetWidth;
         let targetOffset = target.getBoundingClientRect();
-        let top;
+        let top, left;
 
-        if((targetOffset.top + targetHeight + elementOuterHeight) > window.innerHeight)
-            top = -1* (elementOuterHeight);
+        if((targetOffset.top + targetHeight + elementDimensions.height) > window.innerHeight)
+            top = -1* (elementDimensions.height);
         else
             top = targetHeight;
 
+        if((targetOffset.left + elementDimensions.width) > window.innerWidth)
+            left = targetWidth - elementDimensions.width;
+        else
+            left = 0;
+
         element.style.top = top+ 'px';
-        element.style.left = 0 + 'px';
+        element.style.left = left + 'px';
     }
 
     public absolutePosition(element: any, target: any): void {
@@ -105,6 +111,28 @@ export class DomHandler {
         element.style.visibility = 'visible';
 
         return elementHeight;
+    }
+    
+    public getHiddenElementOuterWidth(element: any): number {
+        element.style.visibility = 'hidden';
+        element.style.display = 'block';
+        let elementWidth = element.offsetWidth;
+        element.style.display = 'none';
+        element.style.visibility = 'visible';
+
+        return elementWidth;
+    }
+    
+    public getHiddenElementDimensions(element: any): any {
+        let dimensions: any = {};
+        element.style.visibility = 'hidden';
+        element.style.display = 'block';
+        dimensions.width = element.offsetWidth;
+        dimensions.height = element.offsetHeight;
+        element.style.display = 'none';
+        element.style.visibility = 'visible';
+
+        return dimensions;
     }
 
     public scrollInView(container, item) {
@@ -215,6 +243,15 @@ export class DomHandler {
         return height;
     }
     
+    public getHeight(el): number {
+        let height = el.offsetHeight;
+        let style = getComputedStyle(el);
+
+        height -= parseInt(style.paddingTop) + parseInt(style.paddingBottom) + parseInt(style.borderTopWidth) + parseInt(style.borderBottomWidth);
+        
+        return height;
+    }
+    
     public getViewport(): any {
         let win = window,
         d = document,
@@ -224,5 +261,31 @@ export class DomHandler {
         h = win.innerHeight|| e.clientHeight|| g.clientHeight;
         
         return {width: w, height: h};
+    }
+    
+    public equals(obj1: any, obj2: any): boolean {
+    	for(var p in obj1) {
+    		if(obj1.hasOwnProperty(p) !== obj2.hasOwnProperty(p)) {
+                return false;
+            }
+     
+    		switch(typeof (obj1[p])) {
+    			case 'object':
+    				if (!this.equals(obj1[p], obj2[p])) return false;
+    				break;
+
+    			case 'function':
+    				if (typeof (obj2[p]) == 'undefined' || (p != 'compare' && obj1[p].toString() != obj2[p].toString())) return false;
+    				break;
+
+    			default:
+    				if (obj1[p] != obj2[p]) return false;
+    		}
+    	}
+     
+    	for (var p in obj2) {
+    		if (typeof (obj1[p]) == 'undefined') return false;
+    	}
+    	return true;
     }
 }

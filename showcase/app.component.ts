@@ -1,5 +1,5 @@
-import {Component} from 'angular2/core';
-import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
+import {Component} from '@angular/core';
+import {RouteConfig, ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 import {SetupComponent} from './setup.component';
 import {HomePageComponent} from './homepage.component';
 import {ThemingComponent} from './theming.component';
@@ -86,6 +86,7 @@ import {ContextMenuDemo} from "./demo/contextmenu/contextmenudemo";
 import {DragDropDemo} from "./demo/dragdrop/dragdropdemo";
 import {ToolbarDemo} from "./demo/toolbar/toolbardemo";
 import {ValidationDemo} from "./demo/validation/validationdemo";
+import {DataTableExportDemo} from "./demo/datatable/datatableexportdemo";
 
 @Component({
     selector: 'primeng-showcase',
@@ -178,7 +179,8 @@ import {ValidationDemo} from "./demo/validation/validationdemo";
     {path: '/contextmenu', name: 'ContextMenuDemo', component: ContextMenuDemo},
     {path: '/dragdrop', name: 'DragDropDemo', component: DragDropDemo},
     {path: '/toolbar', name: 'ToolbarDemo', component: ToolbarDemo},
-    {path: '/validation', name: 'ValidationDemo', component: ValidationDemo}
+    {path: '/validation', name: 'ValidationDemo', component: ValidationDemo},
+    {path: '/datatableexport', name: 'DataTableExportDemo', component: DataTableExportDemo}
 ])
 export class AppComponent {
 
