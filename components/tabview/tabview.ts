@@ -4,13 +4,18 @@ import {TabPanel} from './tabpanel';
 @Component({
     selector: 'p-tabView',
     template: `
-        <div [ngClass]="'ui-tabview ui-widget ui-widget-content ui-corner-all ui-tabview-' + orientation" [attr.style]="style" [class]="styleClass">
+        <div [ngClass]="'ui-tabview ui-widget ui-widget-content ui-corner-all ui-tabview-' + orientation" [ngStyle]="style" [class]="styleClass">
             <ul class="ui-tabview-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
                 <template ngFor let-tab [ngForOf]="tabs">
-                    <li [class]="getDefaultHeaderClass(tab)" [attr.style]="tab.headerStyle"
+                    <li [class]="getDefaultHeaderClass(tab)" [ngStyle]="tab.headerStyle"
                         [ngClass]="{'ui-tabview-selected ui-state-active': tab.selected, 'ui-state-hover': tab.hoverHeader&&!tab.disabled, 'ui-state-disabled': tab.disabled}"
                         (mouseenter)="tab.hoverHeader=true" (mouseleave)="tab.hoverHeader=false" (click)="open($event,tab)" *ngIf="!tab.closed">
-                        <a href="#">{{tab.header}}</a><span *ngIf="tab.closable" class="fa fa-close" (click)="close($event,tab)"></span>
+                        <a href="#">
+                            <span class="ui-tabview-left-icon fa" [ngClass]="tab.leftIcon" *ngIf="tab.leftIcon"></span>
+                            {{tab.header}}
+                            <span class="ui-tabview-right-icon fa" [ngClass]="tab.rightIcon" *ngIf="tab.rightIcon"></span>
+                        </a>
+                        <span *ngIf="tab.closable" class="ui-tabview-close fa fa-close" (click)="close($event,tab)"></span>
                     </li>
                 </template>
             </ul>
@@ -24,7 +29,7 @@ export class TabView {
 
     @Input() orientation: string = 'top';
     
-    @Input() style: string;
+    @Input() style: any;
     
     @Input() styleClass: string;
 

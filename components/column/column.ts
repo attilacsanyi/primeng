@@ -1,6 +1,6 @@
 import {Component,ElementRef,AfterViewInit,DoCheck,Input,Output,EventEmitter,ContentChild,IterableDiffers,TemplateRef} from '@angular/core';
-import {Header} from '../common/header';
-import {Footer} from '../common/footer';
+import {Header} from '../common';
+import {Footer} from '../common';
 
 @Component({
     selector: 'p-column',
@@ -17,7 +17,7 @@ export class Column {
     @Input() filterMatchMode: string;
     @Input() rowspan: number;
     @Input() colspan: number;
-    @Input() style: string;
+    @Input() style: any;
     @Input() styleClass: string;
     @Input() hidden: boolean;
     @Input() expander: boolean;

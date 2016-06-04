@@ -11,7 +11,7 @@
     <p>Selected City: {{selectedCity||'none'}}</p>
 
     <h3>Content with Filter</h3>
-    <p-dropdown [options]="cars" [(ngModel)]="selectedCar" [filter]="true" style="width:150px">
+    <p-dropdown [options]="cars" [(ngModel)]="selectedCar" [filter]="true" [style]="{'width':'150px'}">
         <template let-car>
             <li class="ui-dropdown-item ui-helper-clearfix" style="position: relative" [attr.data-value]="car.value">
                 <img src="showcase/resources/demo/images/car/{{car.label}}.gif" style="width:24px;position:absolute;top:1px;left:10px"/>
@@ -204,7 +204,7 @@ export class MyModel {
             </div>
 
             <h3>Styling</h3>
-            <p>Following is the list of structural style classes, for theming classes visit <a href="#" [routerLink]="['Theming']">theming page</a>.</p>
+            <p>Following is the list of structural style classes, for theming classes visit <a href="#" [routerLink]="['/theming']">theming page</a>.</p>
             <div class="doc-tablewrapper">
                 <table class="doc-table">
                     <thead>
@@ -266,7 +266,7 @@ export class MyModel {
 &lt;p&gt;Selected City: {{selectedCity||'none'}}&lt;/p&gt;
 
 &lt;h3&gt;Content with Filter&lt;/h3&gt;
-&lt;p-dropdown [options]="cars" [(ngModel)]="selectedCar" [filter]="true" style="width:150px"&gt;
+&lt;p-dropdown [options]="cars" [(ngModel)]="selectedCar" [filter]="true" [style]="{'width':'150px'}"&gt;
     &lt;template let-car&gt;
         &lt;li class="ui-helper-clearfix" style="position: relative"&gt;
             &lt;img src="showcase/resources/demo/images/car/{{car.label}}.gif" style="width:24px;position:absolute;top:1px;left:10px"/&gt;

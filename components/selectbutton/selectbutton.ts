@@ -1,5 +1,5 @@
 import {Component,Input,Output,EventEmitter,forwardRef,Provider} from '@angular/core';
-import {SelectItem} from '../api/selectitem';
+import {SelectItem} from '../common';
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/common';
 
 const SELECTBUTTON_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
@@ -10,7 +10,7 @@ const SELECTBUTTON_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
 @Component({
     selector: 'p-selectButton',
     template: `
-        <div [ngClass]="'ui-selectbutton ui-buttonset ui-widget ui-corner-all ui-buttonset-' + options.length" (mouseleave)="hoveredItem=null" [attr.style]="style" [class]="styleClass">
+        <div [ngClass]="'ui-selectbutton ui-buttonset ui-widget ui-corner-all ui-buttonset-' + options.length" (mouseleave)="hoveredItem=null" [ngStyle]="style" [class]="styleClass">
             <div *ngFor="let option of options;" class="ui-button ui-widget ui-state-default ui-button-text-only"
                 [ngClass]="{'ui-state-hover': hoveredItem == option,'ui-state-active':isSelected(option)}"
                 (mouseenter)="hoveredItem=option" (click)="onItemClick($event,option)">
@@ -28,7 +28,7 @@ export class SelectButton implements ControlValueAccessor {
 
     @Input() multiple: boolean;
     
-    @Input() style: string;
+    @Input() style: any;
         
     @Input() styleClass: string;
 

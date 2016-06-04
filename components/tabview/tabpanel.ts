@@ -19,9 +19,13 @@ export class TabPanel {
     
     @Input() closable: boolean;
     
-    @Input() headerStyle: string;
+    @Input() headerStyle: any;
     
     @Input() headerStyleClass: string;
+    
+    @Input() leftIcon: string;
+    
+    @Input() rightIcon: string;
     
     public hoverHeader: boolean;
     
