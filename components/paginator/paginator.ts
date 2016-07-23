@@ -35,8 +35,6 @@ export class Paginator {
 
     @Input() rows: number = 0;
 
-    @Input() first: number = 0;
-
     @Input() pageLinkSize: number = 5;
 
     @Output() onPageChange: EventEmitter<any> = new EventEmitter();
@@ -50,6 +48,8 @@ export class Paginator {
     pageLinks: number[];
 
     _totalRecords: number = 0;
+    
+    _first: number = 0;
 
     @Input() get totalRecords(): number {
         return this._totalRecords;
@@ -57,6 +57,15 @@ export class Paginator {
 
     set totalRecords(val:number) {
         this._totalRecords = val;
+        this.updatePageLinks();
+    }
+    
+    @Input() get first(): number {
+        return this._first;
+    }
+
+    set first(val:number) {
+        this._first = val;
         this.updatePageLinks();
     }
 
@@ -104,6 +113,7 @@ export class Paginator {
         if(p >= 0 && p < pc) {
             this.first = this.rows * p;
             var state = {
+                page: p,
                 first: this.first,
                 rows: this.rows,
                 pageCount: pc

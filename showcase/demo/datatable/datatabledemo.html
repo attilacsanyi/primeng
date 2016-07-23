@@ -430,9 +430,8 @@ mysort(event) {
             <p>See the <a [routerLink]="['/datatablefilter']">live example.</a></p>
 
             <h3>Selection</h3>
-            <p>DataTable provides single and multiple selection modes on click of a row. Metakey is used to unselect a selected row and also to select
-            multiple rows at the same time in multiple mode. Selected rows are bound to the selection property and onRowSelect-onRowUnselect events
-                    are provided as optional callbacks.</p>
+            <p>DataTable provides single and multiple selection modes on click of a row. Selected rows are bound to the selection property and onRowSelect-onRowUnselect events
+            are provided as optional callbacks.</p>
             <p>In single mode, selection binding is an object reference.</p>
 <pre>
 <code class="language-typescript" pCode>
@@ -877,6 +876,18 @@ loadData(event: LazyLoadEvent) {
                             <td>string</td>
                             <td>,</td>
                             <td>Character to use as the csv separator.</td>
+                        </tr>
+                        <tr>
+                            <td>emptyMessage</td>
+                            <td>string</td>
+                            <td>No records found.</td>
+                            <td>Text to display when there is no data.</td>
+                        </tr>
+                        <tr>
+                            <td>paginatorPosition</td>
+                            <td>string</td>
+                            <td>bottom</td>
+                            <td>Position of the paginator.</td>
                         </tr>
                     </tbody>
                 </table>

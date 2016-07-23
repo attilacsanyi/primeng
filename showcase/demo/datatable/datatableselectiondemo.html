@@ -3,9 +3,9 @@
 <div class="ContentSideSections">
     <div>
         <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">DataTable - <span class="subitem">Selection</span></span>
-        <span class="defaultText">DataTable provides single and multiple selection modes on click of a row. Metakey is used to unselect a selected row and also to select
-        multiple rows at the same time in multiple mode. Selected rows are bound to the selection property and onRowSelect-onRowUnselect events
-        are provided as optional callbacks.</span>
+        <span class="defaultText">DataTable provides single and multiple selection modes on click of a row. Selected rows are bound to the selection property 
+            and onRowSelect-onRowUnselect events are provided as optional callbacks. In addition built-in radio button and checkbox based selections 
+            are available as alternatives.</span>
     </div>
 </div>
 
@@ -25,7 +25,7 @@
 
     <h3>Multiple</h3>
     <p></p>
-    <p-dataTable [value]="cars" selectionMode="multiple" [(selection)]="selectedCars">
+    <p-dataTable [value]="cars" selectionMode="multiple" [(selection)]="selectedCars1">
         <header>Multiple Selection</header>
         <p-column field="vin" header="Vin"></p-column>
         <p-column field="year" header="Year"></p-column>
@@ -33,7 +33,7 @@
         <p-column field="color" header="Color"></p-column>
         <footer>
             <ul>
-                <li *ngFor="let car of selectedCars" style="text-align: left">{{car.vin + ' - ' + car.brand + ' - ' + car.year + ' - ' + car.color}}</li>
+                <li *ngFor="let car of selectedCars1" style="text-align: left">{{car.vin + ' - ' + car.brand + ' - ' + car.year + ' - ' + car.color}}</li>
             </ul>
         </footer>
     </p-dataTable>
@@ -46,6 +46,34 @@
         <p-column field="year" header="Year"></p-column>
         <p-column field="brand" header="Brand"></p-column>
         <p-column field="color" header="Color"></p-column>
+    </p-dataTable>
+    
+    <h3>RadioButton</h3>
+    <p>Single selection can also be handled using radio buttons by enabling the selectionMode property of column as "single".</p>
+    <p-dataTable [value]="cars" [(selection)]="selectedCar3">
+        <header>Single Selection</header>
+        <footer><div style="text-align: left">Selected Car: {{selectedCar3 ? selectedCar3.vin + ' - ' + selectedCar3.brand + ' - ' + selectedCar3.year + ' - ' + selectedCar3.color: 'none'}}</div></footer>
+        <p-column [style]="{'width':'38px'}" selectionMode="single"></p-column>
+        <p-column field="vin" header="Vin"></p-column>
+        <p-column field="year" header="Year"></p-column>
+        <p-column field="brand" header="Brand"></p-column>
+        <p-column field="color" header="Color"></p-column>
+    </p-dataTable>
+    
+    <h3>Checkbox</h3>
+    <p>Multiple selection can also be handled using checkboxes by enabling the selectionMode property of column as "multiple".</p>
+    <p-dataTable [value]="cars" [(selection)]="selectedCars2">
+        <header>Single Selection</header>
+        <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+        <p-column field="vin" header="Vin"></p-column>
+        <p-column field="year" header="Year"></p-column>
+        <p-column field="brand" header="Brand"></p-column>
+        <p-column field="color" header="Color"></p-column>
+        <footer>
+            <ul>
+                <li *ngFor="let car of selectedCars1" style="text-align: left">{{car.vin + ' - ' + car.brand + ' - ' + car.year + ' - ' + car.color}}</li>
+            </ul>
+        </footer>
     </p-dataTable>
 </div>
 
